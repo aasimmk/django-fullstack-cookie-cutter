@@ -15,7 +15,7 @@
 {% endif %}
 {% endif %}
 - [Django settings](#django-settings)
-- [uv commands](#uv-commands-run-from-backend)
+- [uv commands](#uv-commands)
 - [Frontend](#frontend)
 - [Docker](#docker)
 - [Infrastructure](#infrastructure)
@@ -25,7 +25,7 @@
 
 ## Tech stack
 
-This project was scaffolded with **django-cookie-cutter**. The sections below reflect **your Cookiecutter answers** (not optional add-ons you must install later).
+This project was scaffolded with **django-fullstack-cookie-cutter**. The sections below reflect **your Cookiecutter answers** (not optional add-ons you must install later).
 
 ### Backend runtime
 
@@ -212,7 +212,9 @@ Set `DJANGO_SETTINGS_MODULE` in `backend/.env` or your process manager (see `bac
 
 Environment variables are read from `os.environ` after `backend/.env` is loaded in [`src/settings/_env.py`](backend/src/settings/_env.py) (via **python-dotenv**). Use the `env` singleton (`get_str`, `get_bool`, `get_list`, etc.) in settings modules. `DATABASE_URL` still uses **django-environ**’s parser in `base.py` when PostgreSQL is enabled.
 
-## uv commands (run from `backend/`)
+## uv commands
+
+Run the following from the **`backend/`** directory (repository root is one level up).
 
 | Command                      | Purpose                                                                                            |
 |------------------------------|----------------------------------------------------------------------------------------------------|

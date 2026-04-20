@@ -1,6 +1,6 @@
-# 🍪 django-cookie-cutter
+# django-fullstack-cookie-cutter
 
-**django-cookie-cutter** is a [Cookiecutter](https://github.com/cookiecutter/cookiecutter) template that scaffolds a production-minded Django monorepo: a **`backend/`** app (project package under **`src/`**, [uv](https://github.com/astral-sh/uv), **Ruff**, **pytest**), optional **Vue 3** or **React 18/19** (**Vite 5/6**, Tailwind, Vitest, Playwright, **django-vite**), optional **Nuxt 3/4** or **Next.js 14/15** (standalone on port 3000 with Vitest + Playwright), optional **HTMX** (CDN major 1 or 2), and optional **PostgreSQL**, **Redis** caching, and **Celery** (Redis or RabbitMQ broker) with matching **Docker Compose** services (**`docker/backend/`** + optional **`docker/frontend/`** images) and **GitHub Actions** CI.
+**django-fullstack-cookie-cutter** is a [Cookiecutter](https://github.com/cookiecutter/cookiecutter) template that scaffolds a production-minded Django monorepo: a **`backend/`** app (project package under **`src/`**, [uv](https://github.com/astral-sh/uv), **Ruff**, **pytest**), optional **Vue 3** or **React 18/19** (**Vite 5/6**, Tailwind, Vitest, Playwright, **django-vite**), optional **Nuxt 3/4** or **Next.js 14/15** (standalone on port 3000 with Vitest + Playwright), optional **HTMX** (CDN major 1 or 2), and optional **PostgreSQL**, **Redis** caching, and **Celery** (Redis or RabbitMQ broker) with matching **Docker Compose** services (**`docker/backend/`** + optional **`docker/frontend/`** images) and **GitHub Actions** CI.
 
 [![Cookiecutter](https://img.shields.io/badge/cookiecutter-template-D4AA00?logo=cookiecutter&logoColor=white&style=flat)](https://github.com/cookiecutter/cookiecutter)
 [![Django](https://img.shields.io/static/v1?label=Django&message=4.2%20%7C%205.0%20%7C%205.1%20%7C%205.2&color=092E20&logo=django&logoColor=white&style=flat)](https://www.djangoproject.com/)
@@ -39,22 +39,24 @@
 [![Notion](https://img.shields.io/static/v1?label=Notion&message=wiki%20guide&color=000000&logo=notion&logoColor=white&style=flat)](https://www.notion.so/)
 [![Docs: none](https://img.shields.io/static/v1?label=Docs&message=none%20%28README%20only%29&color=6B7280&style=flat)](#prompts)
 
-## ⚡ Quick start
+## Quick start
 
 ```bash
 pip install "cookiecutter>=2.0"
 # or: uv tool install cookiecutter
 
-cookiecutter gh:YOUR_ORG/django-cookie-cutter
-# or from a local checkout of this repository:
-cookiecutter /path/to/django-cookie-cutter
+# Public template (HTTPS; no GitHub login required to fetch)
+cookiecutter https://github.com/aasimmk/django-fullstack-cookie-cutter.git
+# or: cookiecutter gh:aasimmk/django-fullstack-cookie-cutter
+
+# From a local clone (repository root):
+cookiecutter /path/to/django-fullstack-cookie-cutter
 ```
 
 Cookiecutter writes a new directory named after **`project_slug`**. See [Usage](#usage) for the full variable list and what runs after generation.
 
-## 📑 Index
+## Index
 
-- [Quick start](#quick-start)
 - [Introduction](#introduction)
 - [Generated project structure](#generated-project-structure)
 - [Choosing your stack](#choosing-your-stack)
@@ -72,7 +74,7 @@ Cookiecutter writes a new directory named after **`project_slug`**. See [Usage](
 - [Requirements](#requirements)
 - [License](#license)
 
-## 🧭 Introduction
+## Introduction
 
 This repository is the **template source**, not a runnable Django app. Running Cookiecutter against it renders a new directory (your `project_slug`) containing a complete project you can version-control and deploy.
 
@@ -80,7 +82,7 @@ This repository is the **template source**, not a runnable Django app. Running C
 
 **🚀 Typical uses:** greenfield APIs or server-rendered apps, SPAs backed by Django, teams standardizing on uv + Ruff, and projects that want Terraform or platform YAML stubs plus Docker Compose for local parity with production-ish services (Postgres, Redis, RabbitMQ, Celery worker/beat). Optional **documentation host** scaffolding (**GitBook**, **Read the Docs** + MkDocs, **MkDocs** + GitHub Pages, or **Notion**) is trimmed post-generation to match your choice.
 
-## 🌳 Generated project structure
+## Generated project structure
 
 After you run Cookiecutter, the output is a single repo folder (your `project_slug`) with a layout similar to the tree below. Optional paths depend on your answers at the prompts; post-generation hooks delete branches you did not select.
 
@@ -112,7 +114,7 @@ After you run Cookiecutter, the output is a single repo folder (your `project_sl
     └── docs.yml              # only when documentation_provider = mkdocs (MkDocs → gh-pages)
 ```
 
-## 🤔 Choosing your stack
+## Choosing your stack
 
 Use this as a shortcut before you read the full feature tables.
 
@@ -131,11 +133,11 @@ Use this as a shortcut before you read the full feature tables.
 
 Compatibility rules (unsupported combinations) are enforced in `hooks/pre_gen_project.py` before any files are written (for example Django/Python pairs, **`openapi_schema` must be `none` when `api_project` is `n`**, and **`frontend_stack`** must be one of the allowed combined values in `cookiecutter.json`).
 
-## ✨ Features
+## Features
 
 Use the tables as a map from **what you pick at the prompt** to **what lands in the generated repo**. Anything not controlled by a variable is marked **Always**.
 
-### 🐍 Backend and API
+### Backend and API
 
 | What you get | Tuned by | Notes |
 | --- | --- | --- |
@@ -150,7 +152,7 @@ Use the tables as a map from **what you pick at the prompt** to **what lands in 
 | Tox aggregate checks + CI step | `use_tox` | `backend/tox.ini` (tox-uv: `py`, `ruff`, `migrate`), dev deps, optional GitHub Actions Tox job |
 | gettext / locale / `LocaleMiddleware` | `use_i18n` | **`y`:** `USE_I18N`, `LANGUAGES`, `LOCALE_PATHS`, `backend/locale/`, `/i18n/` includes `set_language`, template `i18n` context · **`n`:** `post_gen` drops `backend/locale/` |
 
-### 🎨 Frontend and UI
+### Frontend and UI
 
 | What you get | Tuned by | Notes |
 | --- | --- | --- |
@@ -162,7 +164,7 @@ Use the tables as a map from **what you pick at the prompt** to **what lands in 
 | SPA unit + e2e tests | `frontend_stack` selects a Node SPA | Vitest + Playwright |
 | Safe copy for `{{ … }}` in SPA files | **Always** (template) | `cookiecutter.json` `_copy_without_render` for Vue `.vue` and React `.tsx`/`.css` that contain framework mustaches; extend globs if you add files with literal `{{` that must not pass through Jinja |
 
-### 🗄️ Data, cache, and background jobs
+### Data, cache, and background jobs
 
 | What you get | Tuned by | Notes |
 | --- | --- | --- |
@@ -170,7 +172,7 @@ Use the tables as a map from **what you pick at the prompt** to **what lands in 
 | Redis as Django cache | `use_redis_cache` | `django.core.cache.backends.redis.RedisCache`, `REDIS_CACHE_URL`, `redis` package |
 | Celery worker + beat | `use_celery`, `celery_broker` | **django-celery-beat**; broker Redis or RabbitMQ; Compose services; production runbooks live in the generated **README** → *Celery and cache* when Redis or Celery is on |
 
-### 📋 Project metadata, docs, license, editor
+### Project metadata, docs, license, editor
 
 | What you get | Tuned by | Notes |
 | --- | --- | --- |
@@ -180,7 +182,7 @@ Use the tables as a map from **what you pick at the prompt** to **what lands in 
 | Shared editor rules | **Always** | Root `.editorconfig` |
 | AI / agent hints | **Always** | `AGENTS.md`, `.cursor/rules/project-guidelines.mdc`, `.claude/` snippets reflect your choices |
 
-### ☁️ Cloud, CI, and containers
+### Cloud, CI, and containers
 
 | What you get | Tuned by | Notes |
 | --- | --- | --- |
@@ -188,14 +190,14 @@ Use the tables as a map from **what you pick at the prompt** to **what lands in 
 | GitHub Actions | **Always** (with options) | Backend: uv sync, Ruff, migrations check, pytest; SPA build/test when `frontend_stack` is a Node SPA; optional Tox job |
 | Production image + local stack | **Always** (with options) | `{{ cookiecutter.project_slug }}/docker/backend/Dockerfile` for `backend/`; optional `{{ cookiecutter.project_slug }}/docker/frontend/Dockerfile` when Vue/React/Nuxt/Next (`post_gen` removes it with `frontend/` otherwise); `docker-compose.yml` for **`backend`** (+ **`frontend`** when SPA), optional Postgres, Redis, RabbitMQ, Celery; env vars documented in `backend/.env.example` |
 
-### 🪝 Hooks
+### Hooks
 
 | Script | Role |
 | --- | --- |
 | `hooks/pre_gen_project.py` | Validates slug, Django/Python matrix, Postgres major, Celery broker, documentation provider, license, `use_tox`, `use_i18n`, `openapi_schema` vs `api_project`, and **`frontend_stack`** |
 | `hooks/post_gen_project.py` | Prunes unused `frontend/` and `deploy/` trees, `docker/frontend/` when no SPA, `docker/postgres/` when Postgres off, docs scaffolds, `backend/tox.ini` when Tox off; SPA lockfile alignment; `LICENSE` year; `uv sync` + Ruff format in `backend/` when uv is available |
 
-## 🔁 GitHub Actions in generated projects
+## GitHub Actions in generated projects
 
 The rendered repo includes `.github/workflows/ci.yml`, which runs on pushes and pull requests to **`main`**.
 
@@ -212,18 +214,19 @@ The rendered repo includes `.github/workflows/ci.yml`, which runs on pushes and 
 
 When `documentation_provider` is **`mkdocs`**, `.github/workflows/docs.yml` also publishes MkDocs to the **`gh-pages`** branch on pushes that touch `docs/**` or `mkdocs.yml` (enable GitHub Pages on that branch in repo settings).
 
-## 🚀 Usage
+## Usage
 
 ```bash
 pip install "cookiecutter>=2.0"
 # or: uv tool install cookiecutter
 
-cookiecutter gh:YOUR_ORG/django-cookie-cutter
-# or from a local checkout:
-cookiecutter /path/to/django-cookie-cutter
+cookiecutter https://github.com/aasimmk/django-fullstack-cookie-cutter.git
+# or: cookiecutter gh:aasimmk/django-fullstack-cookie-cutter
+
+cookiecutter /path/to/django-fullstack-cookie-cutter
 ```
 
-### 💬 Prompts
+### Prompts
 
 Cookiecutter asks variables **in the order they appear in `cookiecutter.json`**: project metadata first, then Django/backend, database, cache and Celery, **`frontend_stack`** (single list: framework + versions — no separate prompts for unused stacks), then Node tooling, then cloud and docs. Private **`__*`** keys in `cookiecutter.json` derive **`__frontend_framework`** and major fields for templates and are not prompted.
 
@@ -260,25 +263,25 @@ Cookiecutter asks variables **in the order they appear in `cookiecutter.json`**:
 
 ⚙️ After generation, `hooks/post_gen_project.py` removes unused `frontend/*` and `deploy/*` trees, drops `docker/frontend/` when the frontend is not a Node SPA, drops `docker/postgres/` when PostgreSQL is disabled, prunes unused documentation-provider files, removes `backend/tox.ini` when Tox is disabled, removes **`backend/locale/`** when **`use_i18n`** is **`n`**, refreshes the SPA lockfile for the chosen package manager when possible, and runs `uv sync` when `uv` is available.
 
-## 🗂️ Template layout
+## Template layout
 
 - 📁 `{{ cookiecutter.project_slug }}/` — rendered repo with root **`LICENSE`**, **`.editorconfig`**, `docker/backend/Dockerfile`, optional `docker/frontend/` (Node SPA only), `backend/` (Django in `src/` + uv, optional **`backend/tox.ini`** when `use_tox` is `y`), optional `frontend/`, and `deploy/`
 - 🔍 `hooks/pre_gen_project.py` — Django / Python version compatibility checks; validates **`frontend_stack`** against the allowed combined values in `cookiecutter.json`
 - ✂️ `hooks/post_gen_project.py` — prune options, documentation scaffold, SPA lockfiles, optional Tox file, `backend/locale/` when `use_i18n` is `n`, `uv sync`
 - ⚙️ `cookiecutter.json` — defaults and `_copy_without_render` for Vue/React sources that contain literal `{{` … `}}` mustaches
 
-## 🎬 Demo recording
+## Demo recording
 
 A short terminal recording ([asciinema](https://asciinema.org/) or a GIF) of running `cookiecutter` against this template and listing the resulting tree helps newcomers see the prompts and output in one glance. If you publish one, add an embed or link here.
 
-## 🛠️ Customizing this template
+## Customizing this template
 
 - **Prompts and defaults** live in [`cookiecutter.json`](cookiecutter.json). Keep **key order** as users see it at the terminal: generic project fields → Django/backend → database → cache/Celery → **`frontend_stack`** (one choice for framework + versions) → **`__*`** derived keys (not prompted; Cookiecutter renders them into the context for templates) → `node_version` / `node_package_manager` → cloud/docs → optional **`__prompts__`** labels → **`_copy_without_render`** last. New keys should be read in `hooks/pre_gen_project.py` / `hooks/post_gen_project.py` when they affect validation or pruning (for example `openapi_schema` vs `api_project`, and **`frontend_stack`** membership).
 - **Conditional files** use Jinja2 (`{% if cookiecutter… %}`) inside `{{ cookiecutter.project_slug }}/`. Keep branches in sync with what `post_gen_project.py` removes so generated trees stay minimal.
 - **Do not process** Vue/React/Nuxt/Next sources that contain literal `{{` … `}}` as template syntax: extend `_copy_without_render` in `cookiecutter.json` when adding new globs.
-- **Test locally** with `cookiecutter /absolute/path/to/django-cookie-cutter --no-input` (uses defaults from `cookiecutter.json`) or a [replay file](https://cookiecutter.readthedocs.io/en/latest/advanced/replay.html) (`--replay` / `--replay-file`), then inspect the output directory.
+- **Test locally** with `cookiecutter /absolute/path/to/django-fullstack-cookie-cutter --no-input` (uses defaults from `cookiecutter.json`) or a [replay file](https://cookiecutter.readthedocs.io/en/latest/advanced/replay.html) (`--replay` / `--replay-file`), then inspect the output directory.
 
-## ❓ FAQ
+## FAQ
 
 **Why is this repo not a runnable Django app?**  
 It is the Cookiecutter *source*. Only the generated `<project_slug>/` tree is a project you `cd` into and run.
@@ -298,9 +301,9 @@ Cookiecutter’s `_copy_without_render` copies matching paths literally so Vue `
 **Where is environment variable documentation?**  
 In the generated project, see `backend/.env.example` and the **Celery and cache** section of `README.md` when Redis cache or Celery is enabled.
 
-## 🆚 Compared to other templates
+## Compared to other templates
 
-| | **django-cookie-cutter** (this repo) | Typical “batteries included” Django cookiecutters |
+| | **django-fullstack-cookie-cutter** (this repo) | Typical “batteries included” Django cookiecutters |
 | --- | --- | --- |
 | **Layout** | Monorepo: `backend/` + optional `frontend/`, optional `deploy/` | Often single Django tree or older pip-centric layout |
 | **Python tooling** | **uv**, Ruff, pytest (+ optional tox-uv) | Often pip/poetry + separate tool choices |
@@ -310,19 +313,19 @@ In the generated project, see `backend/.env.example` and the **Celery and cache*
 
 Other community templates (for example [cookiecutter-django](https://github.com/cookiecutter/cookiecutter-django)) optimize for different defaults and file layouts—pick the template whose opinions match your team.
 
-## 🤝 Contributing
+## Contributing
 
 Issues and pull requests are welcome. When you change prompts or hooks, regenerate a sample project locally and smoke-test `backend` (migrate, pytest) and, when applicable, the SPA build. Keep hook logic and `cookiecutter.json` defaults aligned so first-time runs stay smooth.
 
-## 📰 Changelog
+## Changelog
 
-Notable template changes are best tracked through **[GitHub Releases](https://github.com/YOUR_ORG/django-cookie-cutter/releases)** once you publish this repository under your org or fork—tag releases so downstream teams can pin a known-good revision.
+Notable template changes are best tracked through **[GitHub Releases](https://github.com/aasimmk/django-fullstack-cookie-cutter/releases)**—tag releases so downstream teams can pin a known-good revision with `cookiecutter https://github.com/aasimmk/django-fullstack-cookie-cutter.git --checkout <tag>`.
 
-## 📦 Requirements
+## Requirements
 
 - 🍪 **Cookiecutter** 2.x (to expand the template)
 - 🐍 **For generated projects:** [uv](https://github.com/astral-sh/uv), a Python matching the chosen `python_version`, and—if you select Vue, React, Nuxt, or Next—a **Node.js** install matching the chosen `node_version` (for local dev and CI)
 
-## 📄 License
+## License
 
 This template repository is not tied to a single SPDX license. When you generate a project, pick **`license`** at the prompt; the rendered repo includes a matching root **`LICENSE`** and metadata in **`backend/pyproject.toml`**.

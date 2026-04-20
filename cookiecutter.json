@@ -1,7 +1,7 @@
 {
   "project_name": "My Django Project",
   "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
-  "description": "A Django project generated from django-cookie-cutter",
+  "description": "A Django project generated from django-fullstack-cookie-cutter",
   "author_name": "Your Name",
   "email": "you@example.com",
   "license": ["MIT", "Apache-2.0", "BSD-3-Clause", "GPL-3.0-or-later", "AGPL-3.0-or-later", "Proprietary"],

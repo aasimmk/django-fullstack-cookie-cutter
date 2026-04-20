@@ -1,0 +1,40 @@
+{% raw %}{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block body %}
+<div class="mx-auto max-w-3xl px-4 py-16">
+  <h1 class="text-3xl font-bold tracking-tight">{% endraw %}{{ cookiecutter.project_name }}{% raw %}</h1>
+  <p class="mt-2 text-slate-600">{% endraw %}{{ cookiecutter.description }}{% raw %}</p>
+{% endraw %}
+{% if cookiecutter.frontend_framework in ["vue", "react"] %}
+  <div id="app" class="mt-8 rounded-lg border border-slate-200 bg-white p-6 shadow-sm"></div>
+{% if cookiecutter.frontend_framework == "react" %}{% raw %}
+  {% load django_vite %}
+  {% vite_react_refresh %}
+{% endraw %}{% endif %}{% if cookiecutter.frontend_framework == "vue" %}{% raw %}
+  {% load django_vite %}
+  {% vite_asset 'src/main.ts' %}
+{% endraw %}{% elif cookiecutter.frontend_framework == "react" %}{% raw %}
+  {% load django_vite %}
+  {% vite_asset 'src/main.tsx' %}
+{% endraw %}{% endif %}
+{% elif cookiecutter.frontend_framework in ["nuxt", "next"] %}
+  <div class="mt-8 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+    <h2 class="text-lg font-semibold text-slate-900">{% if cookiecutter.frontend_framework == "nuxt" %}Nuxt{% else %}Next.js{% endif %} (separate dev server)</h2>
+    <p class="mt-2 text-slate-600">The UI runs on <strong class="font-mono">http://127.0.0.1:3000</strong> while Django serves this page and your API on port <strong class="font-mono">8000</strong>.</p>
+    <pre class="mt-4 overflow-x-auto rounded-md bg-slate-900 p-4 text-sm text-slate-100">cd frontend/{{ cookiecutter.frontend_framework }}
+{% if cookiecutter.node_package_manager == "npm" %}npm install
+npm run dev
+npm run build{% elif cookiecutter.node_package_manager == "pnpm" %}pnpm install
+pnpm run dev
+pnpm run build{% else %}yarn install
+yarn run dev
+yarn run build{% endif %}</pre>
+{% if cookiecutter.api_project != "y" %}
+    <p class="mt-4 text-sm text-amber-800">Cross-origin browser calls from <code class="rounded bg-amber-100 px-1">:3000</code> to Django need CORS. Enable <strong>api_project</strong> when generating (adds <code class="rounded bg-amber-100 px-1">django-cors-headers</code> and defaults that include port 3000), or configure CORS yourself.</p>
+{% endif %}
+  </div>
+{% endif %}
+{% raw %}
+</div>
+{% endblock %}
+{% endraw %}

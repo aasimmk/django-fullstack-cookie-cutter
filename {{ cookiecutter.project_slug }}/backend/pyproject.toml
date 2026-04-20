@@ -1,0 +1,105 @@
+[project]
+name = "{{ cookiecutter.project_slug }}"
+version = "0.1.0"
+description = "{{ cookiecutter.description }}"
+readme = "README.md"
+requires-python = ">={{ cookiecutter.python_version }}"
+authors = [{ name = "{{ cookiecutter.author_name }}", email = "{{ cookiecutter.email }}" }]
+{% if cookiecutter.license == "Proprietary" %}
+license = { text = "LicenseRef-Proprietary" }
+{% else %}
+license = { text = "{{ cookiecutter.license }}" }
+{% endif %}
+dependencies = [
+    "django>={{ cookiecutter.django_version }},<{{ (cookiecutter.django_version.split('.')[0] | int) + 1 }}",
+    "django-waffle>=5.0.0,<6",
+    "django-guardian>=3.3.0,<4",
+    "django-environ>=0.11.2",
+    "python-dotenv>=1.0.0",
+    "gunicorn>=23.0.0",
+    "whitenoise>=6.7.0",
+{% if cookiecutter.frontend_framework == "htmx" %}
+    "django-htmx>=1.21.0",
+{% endif %}
+{% if cookiecutter.frontend_framework in ["vue", "react"] %}
+    "django-vite>=3.0.0",
+{% endif %}
+{% if cookiecutter.use_postgresql == "y" %}
+    "psycopg[binary]>=3.2.0",
+{% endif %}
+{% if cookiecutter.use_redis_cache == "y" %}
+    "redis>=5.0.0",
+{% endif %}
+{% if cookiecutter.use_celery == "y" %}
+{% if cookiecutter.celery_broker == "rabbitmq" %}
+    "celery>=5.4.0",
+{% else %}
+    "celery[redis]>=5.4.0",
+{% endif %}
+    "django-celery-beat>=2.7.0",
+{% endif %}
+{% if cookiecutter.api_project == "y" %}
+    "djangorestframework>=3.15.0",
+    "django-filter>=24.3,<26",
+    "django-cors-headers>=4.6.0",
+{% if cookiecutter.openapi_schema == "drf-spectacular" %}
+    "drf-spectacular>=0.28.0,<0.30",
+{% elif cookiecutter.openapi_schema == "drf-yasg" %}
+    "drf-yasg>=1.21.10,<1.22",
+{% endif %}
+{% endif %}
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-django>=4.9.0",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.8.0",
+    "mypy>=1.13.0",
+    "django-stubs[compatible-mypy]>=5.1.0",
+{% if cookiecutter.use_tox == "y" %}
+    "tox>=4.23.0",
+    "tox-uv>=1.23.0",
+{% endif %}
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+target-version = "py{{ cookiecutter.python_version | replace('.', '') }}"
+line-length = 88
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/migrations/*.py" = ["E501"]
+"src/settings/development.py" = ["F405"]
+"src/settings/test.py" = ["F405", "F811"]
+"src/settings/production.py" = ["F405"]
+"src/settings/staging.py" = ["F405"]
+"src/settings/_env.py" = ["B904", "E501"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "src.settings.test"
+python_files = ["tests.py", "test_*.py"]
+addopts = "-ra --strict-markers"
+markers = [
+    "unit: fast isolated tests (no Django DB)",
+    "integration: Django database and HTTP client",
+    "e2e: full HTTP stack (live_server) or external browser automation",
+]
+
+[tool.mypy]
+python_version = "{{ cookiecutter.python_version }}"
+plugins = ["mypy_django_plugin.main"]
+strict = false
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+
+[tool.django-stubs]
+django_settings_module = "src.settings.test"

@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - curl -LsSf https://astral.sh/uv/install.sh | sh
+      - export PATH="$HOME/.local/bin:$PATH"
+  pre_build:
+    commands:
+      - cd backend && (uv sync --frozen --no-dev || uv sync --no-dev)
+  build:
+    commands:
+      - cd backend && uv run ruff check .
+      - cd backend && uv run pytest
+      - docker build -t $IMAGE_REPO_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION .
+  post_build:
+    commands:
+      - echo "Push image to ECR with your registry URL from Terraform outputs"
+
+artifacts:
+  files:
+    - "**/*"

@@ -1,0 +1,27 @@
+{% raw %}{% load static %}
+{% endraw %}{% if cookiecutter.use_i18n == "y" %}{% raw %}{% load i18n %}
+{% endraw %}{% endif %}{% raw %}
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+{% endraw %}{% if cookiecutter.frontend_framework == "htmx" %}
+{% if cookiecutter.htmx_major_version == "2" %}
+  <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-D1Kt99CQMDu/vetoBmiYQ365Lq7fx+hbRAyO9FQXrw5mipRvK8E+K/Oth8J2reCH" crossorigin="anonymous"></script>
+{% else %}
+  <script src="https://unpkg.com/htmx.org@1.9.12/dist/htmx.min.js" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
+{% endif %}
+{% endif %}{% if cookiecutter.frontend_framework in ["vue", "react"] %}{% raw %}
+  {% load django_vite %}
+  {% vite_hmr_client %}
+{% endraw %}{% endif %}{% raw %}
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-full bg-slate-50 text-slate-900 antialiased">
+  {% block body %}{% endblock %}
+</body>
+</html>
+{% endraw %}

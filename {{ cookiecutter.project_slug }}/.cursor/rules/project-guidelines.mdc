@@ -1,0 +1,73 @@
+---
+description: Project-specific coding and collaboration guidelines
+alwaysApply: true
+---
+
+# Project Guidelines
+
+## Mission Context
+- Read `AGENTS.md` before making significant changes.
+- Preserve the documented architecture in `backend/` and (if enabled) `frontend/`.
+
+## Backend Rules
+- Django package lives in `backend/src`.
+- Custom apps live in `backend/src/apps`.
+- Feature flags and global on/off switches use **django-waffle** (`waffle`); manage **Flags**, **Switches**, and **Samples** in Django admin (or `manage.py waffle_*` commands). In templates load `waffle_tags`; in Python use decorators from `waffle` or `waffle.switch_is_active()` as documented upstream.
+- Object-level permissions use **django-guardian** (`guardian`); `AUTHENTICATION_BACKENDS` includes `guardian.backends.ObjectPermissionBackend`. Assign per-object rules with `guardian.shortcuts` (or Django admin); with DRF, opt into `DjangoObjectPermissions` on specific viewsets when needed.
+- Settings live in `backend/src/settings`.
+- Use `src.settings.*` modules (never re-introduce `config.settings.*`).
+- Use `src/settings/_env.py` for non-DB env access in settings.
+{% if cookiecutter.use_i18n == "y" %}
+- **Internationalization** is on: `LocaleMiddleware`, `LANGUAGES`, `LOCALE_PATHS` → `backend/locale/`, `/i18n/setlang/` for `set_language`. Add `django.po` per language and run `makemessages` / `compilemessages` from `backend/`.
+{% endif %}
+
+## API Rules
+{% if cookiecutter.api_project == "y" %}
+- API routes are versioned under `/api/v1/...`.
+- Prefer DRF views/serializers for HTTP JSON interfaces.
+- Querystring filtering uses **django-filter** (`django_filters`): `FilterSet` classes plus `filterset_class` / `filter_backends` on views; global defaults include `DjangoFilterBackend`, DRF `SearchFilter`, and `OrderingFilter`.
+{% if cookiecutter.openapi_schema == "drf-spectacular" %}
+- HTTP API schema and docs use **drf-spectacular** (OpenAPI 3): extend with `@extend_schema` / serializers as needed; schema at `/api/schema/`, ReDoc at `/api/redoc/` (and `/api/schema/redoc/`).
+{% elif cookiecutter.openapi_schema == "drf-yasg" %}
+- HTTP API schema and docs use **drf-yasg** (OpenAPI 2 / Swagger): paths under `/api/swagger/` and `/api/redoc/`; keep schema generation aligned with DRF routes.
+{% endif %}
+- Keep API responses stable and backward compatible.
+{% else %}
+- This template is not API-first by default.
+- If adding API endpoints, introduce versioned routes (`/api/v1/...`) and tests.
+{% endif %}
+
+## Frontend Rules
+{% if cookiecutter.frontend_framework in ["vue", "react"] %}
+- Frontend project is `frontend/{{ cookiecutter.frontend_framework }}`.
+- Build output must target `backend/static/dist` (**django-vite**).
+{% elif cookiecutter.frontend_framework == "nuxt" %}
+- Frontend project is `frontend/nuxt/`. Dev server on **:3000**; coordinate with Django on **:8000** and CORS when calling the API.
+{% elif cookiecutter.frontend_framework == "next" %}
+- Frontend project is `frontend/next/`. Same **:3000** / **:8000** split as Nuxt; no django-vite.
+{% elif cookiecutter.frontend_framework == "htmx" %}
+- Prefer progressive enhancement with HTMX + Django templates.
+{% else %}
+- Keep UX server-rendered unless requirements explicitly need SPA behavior.
+{% endif %}
+
+## Quality Gates
+- Backend checks:
+  - `cd backend && uv run ruff check .`
+  - `cd backend && uv run pytest` (markers: `unit`, `integration`, `e2e`; layout under `backend/tests/{unit,integration,e2e}/`)
+{% if cookiecutter.frontend_framework in ["vue", "react", "nuxt", "next"] %}
+- Frontend checks:
+  - `cd frontend/{{ cookiecutter.frontend_framework }} && {% if cookiecutter.node_package_manager == "npm" %}npm run test{% elif cookiecutter.node_package_manager == "pnpm" %}pnpm run test{% else %}yarn run test{% endif %}`
+  - `cd frontend/{{ cookiecutter.frontend_framework }} && {% if cookiecutter.node_package_manager == "npm" %}npm run build{% elif cookiecutter.node_package_manager == "pnpm" %}pnpm run build{% else %}yarn run build{% endif %}`
+{% endif %}
+
+## Guardrails for Contributors and Agents
+- Create Django migrations with `manage.py makemigrations` (and apply with `migrate`); avoid authoring migration modules manually unless there is an explicit, documented reason.
+- Favor idempotent, data-correct, retry-safe behavior over adding scope or new features when fixing issues.
+- Express environment differences through settings, feature flags, or configuration—not hardcoded branches scattered through the codebase.
+- When requirements or tradeoffs are unclear for a bugfix or feature, stop and ask for clarification instead of assuming.
+
+## Collaboration
+- Keep PRs focused and small.
+- Add/adjust tests for behavior changes.
+- Do not commit secrets.

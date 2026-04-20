@@ -1,0 +1,41 @@
+{
+  "name": "frontend-vue",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+{% if cookiecutter.node_package_manager == "yarn" -%}
+  "packageManager": "yarn@1.22.22",
+{% endif -%}
+  "engines": {
+    "node": ">={{ cookiecutter.node_version }}.0.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "vue": "^{{ cookiecutter.vue_major_version }}"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1",
+    "@vitejs/plugin-vue": "^5",
+    "@vue/test-utils": "^2.4.6",
+    "autoprefixer": "^10.4.20",
+    "jsdom": "^25.0.1",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.16",
+    "typescript": "~5.6.3",
+{% if cookiecutter.vite_major_version == "6" %}
+    "vite": "^6",
+    "vitest": "^3",
+{% else %}
+    "vite": "^5",
+    "vitest": "^2",
+{% endif %}
+    "vue-tsc": "^2.1.10"
+  }
+}

@@ -1,0 +1,21 @@
+import path from "node:path";
+import { defineConfig } from "vitest/config";
+import vue from "@vitejs/plugin-vue";
+
+export default defineConfig({
+  plugins: [vue()],
+  test: {
+    environment: "jsdom",
+    globals: true,
+    exclude: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/tests/e2e/**",
+    ],
+  },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
+});

@@ -1,0 +1,26 @@
+# MkDocs site (used for Read the Docs and/or GitHub Pages — see docs/README.md).
+site_name: "{{ cookiecutter.project_name }}"
+site_description: "Technical documentation for {{ cookiecutter.project_name }}"
+repo_url: https://github.com/YOUR_ORG/{{ cookiecutter.project_slug }}
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+nav:
+  - Home: index.md
+
+markdown_extensions:
+  - pymdownx.superfences
+  - admonition

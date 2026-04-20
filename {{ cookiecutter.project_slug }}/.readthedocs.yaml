@@ -1,0 +1,15 @@
+# Read the Docs — https://docs.readthedocs.io/en/stable/config-file/v2.html
+# Import this repo in RTD; builds the MkDocs site defined in mkdocs.yml.
+version: 2
+
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "{{ cookiecutter.python_version }}"
+
+mkdocs:
+  configuration: mkdocs.yml
+
+python:
+  install:
+    - requirements: docs/requirements.txt

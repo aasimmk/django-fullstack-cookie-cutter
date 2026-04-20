@@ -1,0 +1,30 @@
+{
+  "name": "frontend-nuxt",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "postinstall": "node ./node_modules/nuxt/bin/nuxt.mjs prepare",
+    "preview": "nuxt preview",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+{% if cookiecutter.nuxt_major_version == "4" %}
+    "nuxt": "^4",
+    "vue": "^3",
+    "vue-router": "^5"
+{% else %}
+    "nuxt": "^3",
+    "vue": "^3",
+    "vue-router": "^4"
+{% endif %}
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1",
+    "happy-dom": "^15.11.7",
+    "typescript": "^5",
+    "vitest": "^3"
+  }
+}

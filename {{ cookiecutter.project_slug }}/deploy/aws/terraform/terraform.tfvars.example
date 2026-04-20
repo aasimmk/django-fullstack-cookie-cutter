@@ -1,0 +1,3 @@
+project_name = "{{ cookiecutter.project_slug }}"
+environment  = "staging"
+aws_region   = "us-east-1"

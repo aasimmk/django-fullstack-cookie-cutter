@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "{{ cookiecutter.python_version }}"
+      - name: Sync
+        run: uv sync --frozen 2>/dev/null || uv sync
+      - name: Ruff
+        run: uv run ruff check . && uv run ruff format --check .
+      - name: Migrations check
+        run: uv run python manage.py makemigrations --check --dry-run
+      - name: Pytest
+        run: uv run pytest
+{% if cookiecutter.use_tox == "y" %}
+      - name: Tox
+        run: uv run tox run -e py,ruff,migrate
+{% endif %}
+{% if cookiecutter.frontend_framework in ["vue", "react", "nuxt", "next"] %}
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/{{ cookiecutter.frontend_framework }}
+    steps:
+      - uses: actions/checkout@v4
+{% if cookiecutter.node_package_manager == "pnpm" %}
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+{% endif %}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "{{ cookiecutter.node_version }}"
+{% if cookiecutter.node_package_manager == "npm" %}
+          cache: npm
+          cache-dependency-path: frontend/{{ cookiecutter.frontend_framework }}/package-lock.json
+{% elif cookiecutter.node_package_manager == "pnpm" %}
+          cache: pnpm
+          cache-dependency-path: frontend/{{ cookiecutter.frontend_framework }}/pnpm-lock.yaml
+{% else %}
+          cache: yarn
+          cache-dependency-path: frontend/{{ cookiecutter.frontend_framework }}/yarn.lock
+{% endif %}
+{% if cookiecutter.node_package_manager == "npm" %}
+      - run: npm ci
+      - run: npm run test --if-present
+      - run: npm run build
+{% elif cookiecutter.node_package_manager == "pnpm" %}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run test --if-present
+      - run: pnpm run build
+{% else %}
+      - run: corepack enable
+      - run: yarn install --frozen-lockfile
+      - run: yarn run test --if-present
+      - run: yarn run build
+{% endif %}
+{% endif %}

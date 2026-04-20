@@ -1,0 +1,21 @@
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  pythonVersion: "{{ cookiecutter.python_version }}"
+
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: "$(pythonVersion)"
+  - script: |
+      curl -LsSf https://astral.sh/uv/install.sh | sh
+      echo "##vso[task.prependpath]$HOME/.local/bin"
+    displayName: Install uv
+  - script: cd backend && uv sync --frozen --no-dev || uv sync --no-dev
+    displayName: uv sync
+  - script: cd backend && uv run ruff check . && uv run pytest
+    displayName: Lint and test

@@ -1,0 +1,10 @@
+build:
+  docker:
+    web: docker/backend/Dockerfile
+
+run:
+  web: uv run gunicorn src.wsgi:application --bind 0.0.0.0:$PORT --workers 2
+{% if cookiecutter.use_celery == "y" %}
+  worker: uv run celery -A src worker -l info
+  beat: uv run celery -A src beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+{% endif %}

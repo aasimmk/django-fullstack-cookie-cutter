@@ -1,0 +1,15 @@
+steps:
+  - name: python:{{ cookiecutter.python_version }}-slim
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        pip install --no-cache-dir uv
+        cd backend && (uv sync --frozen --no-dev || uv sync --no-dev)
+        cd backend && uv run ruff check .
+        cd backend && uv run pytest
+  - name: gcr.io/cloud-builders/docker
+    args: ["build", "-t", "gcr.io/$PROJECT_ID/{{ cookiecutter.project_slug }}:$SHORT_SHA", "."]
+
+images:
+  - "gcr.io/$PROJECT_ID/{{ cookiecutter.project_slug }}:$SHORT_SHA"

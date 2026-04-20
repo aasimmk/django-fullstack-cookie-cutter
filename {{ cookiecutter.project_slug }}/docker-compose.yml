@@ -1,0 +1,142 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+    working_dir: /app/backend
+    command: uv run python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - backend/.env
+    environment:
+      DJANGO_SETTINGS_MODULE: src.settings.local
+{% if cookiecutter.use_postgresql == "y" or cookiecutter.use_redis_cache == "y" or (cookiecutter.use_celery == "y" and cookiecutter.celery_broker == "redis") or (cookiecutter.use_celery == "y" and cookiecutter.celery_broker == "rabbitmq") %}
+    depends_on:
+{% if cookiecutter.use_postgresql == "y" %}
+      db:
+        condition: service_healthy
+{% endif %}
+{% if cookiecutter.use_redis_cache == "y" or (cookiecutter.use_celery == "y" and cookiecutter.celery_broker == "redis") %}
+      redis:
+        condition: service_started
+{% endif %}
+{% if cookiecutter.use_celery == "y" and cookiecutter.celery_broker == "rabbitmq" %}
+      rabbitmq:
+        condition: service_healthy
+{% endif %}
+{% endif %}
+
+{% if cookiecutter.frontend_framework in ["vue", "react", "nuxt", "next"] %}
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    working_dir: /app/frontend/{{ cookiecutter.frontend_framework }}
+    volumes:
+      - .:/app
+    ports:
+{% if cookiecutter.frontend_framework in ["vue", "react"] %}
+      - "5173:5173"
+{% else %}
+      - "3000:3000"
+{% endif %}
+    depends_on:
+      backend:
+        condition: service_started
+
+{% endif %}
+
+{% if cookiecutter.use_postgresql == "y" %}
+  db:
+    build:
+      context: .
+      dockerfile: docker/postgres/Dockerfile
+    image: {{ cookiecutter.project_slug }}-postgres:{{ cookiecutter.postgres_version }}
+    environment:
+      POSTGRES_USER: {{ cookiecutter.project_slug }}
+      POSTGRES_PASSWORD: {{ cookiecutter.project_slug }}
+      POSTGRES_DB: {{ cookiecutter.project_slug }}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U {{ cookiecutter.project_slug }}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+{% endif %}
+
+{% if cookiecutter.use_redis_cache == "y" or (cookiecutter.use_celery == "y" and cookiecutter.celery_broker == "redis") %}
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+{% endif %}
+
+{% if cookiecutter.use_celery == "y" and cookiecutter.celery_broker == "rabbitmq" %}
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+{% endif %}
+
+{% if cookiecutter.use_celery == "y" %}
+  celery-worker:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+    working_dir: /app/backend
+    command: uv run celery -A src worker -l info
+    volumes:
+      - .:/app
+    env_file:
+      - backend/.env
+    depends_on:
+{% if cookiecutter.use_redis_cache == "y" or cookiecutter.celery_broker == "redis" %}
+      redis:
+        condition: service_started
+{% endif %}
+{% if cookiecutter.celery_broker == "rabbitmq" %}
+      rabbitmq:
+        condition: service_healthy
+{% endif %}
+{% if cookiecutter.use_postgresql == "y" %}
+      db:
+        condition: service_healthy
+{% endif %}
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+    working_dir: /app/backend
+    command: uv run celery -A src beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - .:/app
+    env_file:
+      - backend/.env
+    depends_on:
+{% if cookiecutter.use_postgresql == "y" %}
+      db:
+        condition: service_healthy
+{% endif %}
+{% if cookiecutter.celery_broker == "rabbitmq" %}
+      rabbitmq:
+        condition: service_healthy
+{% endif %}
+{% if cookiecutter.celery_broker == "redis" %}
+      redis:
+        condition: service_started
+{% endif %}
+{% endif %}

@@ -1,0 +1,35 @@
+{
+  "name": "frontend-next",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3000 --hostname 0.0.0.0",
+    "build": "next build",
+    "start": "next start --port 3000",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+{% if cookiecutter.next_major_version == "14" %}
+    "next": "^14",
+    "react": "^18",
+    "react-dom": "^18"
+{% else %}
+    "next": "^15",
+    "react": "^19",
+    "react-dom": "^19"
+{% endif %}
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1",
+    "@types/node": "^22",
+{% if cookiecutter.next_major_version == "14" %}
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+{% else %}
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+{% endif %}
+    "typescript": "^5",
+    "vitest": "^3"
+  }
+}

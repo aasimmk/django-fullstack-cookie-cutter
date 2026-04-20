@@ -11,7 +11,7 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-{% if cookiecutter.nuxt_major_version == "4" %}
+{% if cookiecutter['__nuxt_major_version'] == "4" %}
     "nuxt": "^4",
     "vue": "^3",
     "vue-router": "^5"

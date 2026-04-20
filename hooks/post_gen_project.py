@@ -6,7 +6,7 @@ import subprocess
 import sys
 from datetime import UTC, datetime
 
-FRONTEND = "{{ cookiecutter.frontend_framework }}"
+FRONTEND = "{{ cookiecutter['__frontend_framework'] }}"
 NODE_PM = "{{ cookiecutter.node_package_manager }}"
 CLOUD = "{{ cookiecutter.cloud_provider }}"
 CELERY = "{{ cookiecutter.use_celery }}"

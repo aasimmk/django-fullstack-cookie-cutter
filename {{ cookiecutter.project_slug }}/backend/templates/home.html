@@ -5,23 +5,23 @@
   <h1 class="text-3xl font-bold tracking-tight">{% endraw %}{{ cookiecutter.project_name }}{% raw %}</h1>
   <p class="mt-2 text-slate-600">{% endraw %}{{ cookiecutter.description }}{% raw %}</p>
 {% endraw %}
-{% if cookiecutter.frontend_framework in ["vue", "react"] %}
+{% if cookiecutter['__frontend_framework'] in ["vue", "react"] %}
   <div id="app" class="mt-8 rounded-lg border border-slate-200 bg-white p-6 shadow-sm"></div>
-{% if cookiecutter.frontend_framework == "react" %}{% raw %}
+{% if cookiecutter['__frontend_framework'] == "react" %}{% raw %}
   {% load django_vite %}
   {% vite_react_refresh %}
-{% endraw %}{% endif %}{% if cookiecutter.frontend_framework == "vue" %}{% raw %}
+{% endraw %}{% endif %}{% if cookiecutter['__frontend_framework'] == "vue" %}{% raw %}
   {% load django_vite %}
   {% vite_asset 'src/main.ts' %}
-{% endraw %}{% elif cookiecutter.frontend_framework == "react" %}{% raw %}
+{% endraw %}{% elif cookiecutter['__frontend_framework'] == "react" %}{% raw %}
   {% load django_vite %}
   {% vite_asset 'src/main.tsx' %}
 {% endraw %}{% endif %}
-{% elif cookiecutter.frontend_framework in ["nuxt", "next"] %}
+{% elif cookiecutter['__frontend_framework'] in ["nuxt", "next"] %}
   <div class="mt-8 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-    <h2 class="text-lg font-semibold text-slate-900">{% if cookiecutter.frontend_framework == "nuxt" %}Nuxt{% else %}Next.js{% endif %} (separate dev server)</h2>
+    <h2 class="text-lg font-semibold text-slate-900">{% if cookiecutter['__frontend_framework'] == "nuxt" %}Nuxt {{ cookiecutter['__nuxt_major_version'] }}{% else %}Next.js {{ cookiecutter['__next_major_version'] }}{% endif %} (separate dev server)</h2>
     <p class="mt-2 text-slate-600">The UI runs on <strong class="font-mono">http://127.0.0.1:3000</strong> while Django serves this page and your API on port <strong class="font-mono">8000</strong>.</p>
-    <pre class="mt-4 overflow-x-auto rounded-md bg-slate-900 p-4 text-sm text-slate-100">cd frontend/{{ cookiecutter.frontend_framework }}
+    <pre class="mt-4 overflow-x-auto rounded-md bg-slate-900 p-4 text-sm text-slate-100">cd frontend/{{ cookiecutter['__frontend_framework'] }}
 {% if cookiecutter.node_package_manager == "npm" %}npm install
 npm run dev
 npm run build{% elif cookiecutter.node_package_manager == "pnpm" %}pnpm install

@@ -118,9 +118,9 @@ Use this as a shortcut before you read the full feature tables.
 
 | If you want… | Sensible defaults |
 | --- | --- |
-| JSON API only, no SPA | `frontend_framework` = `none`, `api_project` = `y`; optional `openapi_schema` = `drf-spectacular` (OpenAPI 3) or `drf-yasg` (OpenAPI 2) |
-| Server-rendered HTML with progressive enhancement | `frontend_framework` = `htmx` |
-| Separate SPA with Django as API or hybrid | `frontend_framework` = `vue`, `react`, `nuxt`, or `next`; set **`vue_major_version`**, **`vite_major_version`**, **`react_major_version`**, **`nuxt_major_version`**, or **`next_major_version`** as prompted; set `node_version` + `node_package_manager` (`vue`/`react` use **django-vite** + :5173; `nuxt`/`next` on **:3000** when **`api_project`** is `y`) |
+| JSON API only, no SPA | `frontend_stack` = `none`, `api_project` = `y`; optional `openapi_schema` = `drf-spectacular` (OpenAPI 3) or `drf-yasg` (OpenAPI 2) |
+| Server-rendered HTML with progressive enhancement | `frontend_stack` = `htmx_2` or `htmx_1` (django-htmx + CDN major) |
+| Separate SPA with Django as API or hybrid | Pick one **`frontend_stack`** value (e.g. `vue_3_vite_6`, `react_19_vite_5`, `nuxt_4`, `next_14` — see prompts table); set `node_version` + `node_package_manager` (`vue`/`react` use **django-vite** + :5173; `nuxt`/`next` on **:3000** when **`api_project`** is `y`) |
 | Local DB without Docker Postgres | `use_postgresql` = `n` (SQLite for dev; pytest still uses `src.settings.test`) |
 | Production-like local stack | `use_postgresql` = `y`, tune `postgres_version`; add Redis / Celery if you need them in dev |
 | Background jobs | `use_celery` = `y`, then `celery_broker` = `redis` or `rabbitmq` to match ops |
@@ -129,7 +129,7 @@ Use this as a shortcut before you read the full feature tables.
 | One command to mirror CI locally | `use_tox` = `y` (adds `backend/tox.ini` and a Tox job in GitHub Actions) |
 | gettext / translated templates | `use_i18n` = `y` (`LocaleMiddleware`, `backend/locale/`, `/i18n/setlang/`) |
 
-Compatibility rules (unsupported combinations) are enforced in `hooks/pre_gen_project.py` before any files are written (for example Django/Python pairs, and **`openapi_schema` must be `none` when `api_project` is `n`**).
+Compatibility rules (unsupported combinations) are enforced in `hooks/pre_gen_project.py` before any files are written (for example Django/Python pairs, **`openapi_schema` must be `none` when `api_project` is `n`**, and **`frontend_stack`** must be one of the allowed combined values in `cookiecutter.json`).
 
 ## ✨ Features
 
@@ -154,12 +154,12 @@ Use the tables as a map from **what you pick at the prompt** to **what lands in 
 
 | What you get | Tuned by | Notes |
 | --- | --- | --- |
-| Server templates + Tailwind CDN | `frontend_framework` = `none` | Default Django templates |
-| HTMX | `frontend_framework` = `htmx` | **django-htmx** + CDN assets; **`htmx_major_version`** picks HTMX 1.x vs 2.x on the CDN |
-| Vue or React SPA | `frontend_framework` = `vue` / `react` | **`vue_major_version`** / **`vite_major_version`** (Vue) or **`react_major_version`** / **`vite_major_version`** (React); Tailwind, **django-vite**, build to `backend/static/dist` |
-| Nuxt or Next SPA | `frontend_framework` = `nuxt` / `next` | **`nuxt_major_version`** (3 or 4, SPA mode) or **`next_major_version`** (14 or 15, App Router); dev server on **:3000**; use **`api_project`** = `y` for browser CORS to Django |
+| Server templates + Tailwind CDN | `frontend_stack` = `none` | Default Django templates |
+| HTMX | `frontend_stack` = `htmx_2` or `htmx_1` | **django-htmx** + CDN (SRI) for HTMX major **2** or **1** |
+| Vue or React SPA | `frontend_stack` = `vue_3_vite_6`, `vue_3_vite_5`, `react_18_vite_6`, … | One choice encodes framework + majors; Tailwind, **django-vite**, build to `backend/static/dist` |
+| Nuxt or Next SPA | `frontend_stack` = `nuxt_3`, `nuxt_4`, `next_15`, `next_14` | SPA mode / App Router; dev server on **:3000**; use **`api_project`** = `y` for browser CORS to Django |
 | Node version + lockfile tool | `node_version`, `node_package_manager` | Used for Vue/React/Nuxt/Next and CI; `frontend/.nvmrc`; post_gen aligns lockfile when possible |
-| SPA unit + e2e tests | `frontend_framework` = `vue` / `react` / `nuxt` / `next` | Vitest + Playwright |
+| SPA unit + e2e tests | `frontend_stack` selects a Node SPA | Vitest + Playwright |
 | Safe copy for `{{ … }}` in SPA files | **Always** (template) | `cookiecutter.json` `_copy_without_render` for Vue `.vue` and React `.tsx`/`.css` that contain framework mustaches; extend globs if you add files with literal `{{` that must not pass through Jinja |
 
 ### 🗄️ Data, cache, and background jobs
@@ -185,14 +185,14 @@ Use the tables as a map from **what you pick at the prompt** to **what lands in 
 | What you get | Tuned by | Notes |
 | --- | --- | --- |
 | Deploy starter (Terraform / platform YAML) | `cloud_provider` | AWS, GCP, Azure (Terraform); Heroku (`Procfile`, `heroku.yml`); DigitalOcean App Platform (incl. Celery workers when Celery is on); `none` drops extra `deploy/` trees |
-| GitHub Actions | **Always** (with options) | Backend: uv sync, Ruff, migrations check, pytest; SPA build/test when Vue/React/Nuxt/Next; optional Tox job |
+| GitHub Actions | **Always** (with options) | Backend: uv sync, Ruff, migrations check, pytest; SPA build/test when `frontend_stack` is a Node SPA; optional Tox job |
 | Production image + local stack | **Always** (with options) | `{{ cookiecutter.project_slug }}/docker/backend/Dockerfile` for `backend/`; optional `{{ cookiecutter.project_slug }}/docker/frontend/Dockerfile` when Vue/React/Nuxt/Next (`post_gen` removes it with `frontend/` otherwise); `docker-compose.yml` for **`backend`** (+ **`frontend`** when SPA), optional Postgres, Redis, RabbitMQ, Celery; env vars documented in `backend/.env.example` |
 
 ### 🪝 Hooks
 
 | Script | Role |
 | --- | --- |
-| `hooks/pre_gen_project.py` | Validates slug, Django/Python matrix, Postgres major, Celery broker, documentation provider, license, `use_tox`, `use_i18n`, and `openapi_schema` vs `api_project` |
+| `hooks/pre_gen_project.py` | Validates slug, Django/Python matrix, Postgres major, Celery broker, documentation provider, license, `use_tox`, `use_i18n`, `openapi_schema` vs `api_project`, and **`frontend_stack`** |
 | `hooks/post_gen_project.py` | Prunes unused `frontend/` and `deploy/` trees, `docker/frontend/` when no SPA, `docker/postgres/` when Postgres off, docs scaffolds, `backend/tox.ini` when Tox off; SPA lockfile alignment; `LICENSE` year; `uv sync` + Ruff format in `backend/` when uv is available |
 
 ## 🔁 GitHub Actions in generated projects
@@ -208,7 +208,7 @@ The rendered repo includes `.github/workflows/ci.yml`, which runs on pushes and 
 5. **Pytest** — `uv run pytest`.
 6. **Tox** (only when `use_tox` = `y`) — `tox run -e py,ruff,migrate` via uv.
 
-**Frontend job** (when `frontend_framework` is `vue`, `react`, `nuxt`, or `next`): checkout, Node setup with lockfile caching, install (`npm ci`, `pnpm install --frozen-lockfile`, or `yarn install --frozen-lockfile`), then `test` (if defined) and `build`.
+**Frontend job** (when `frontend_stack` is a Node SPA, i.e. not `none` / `htmx_*`): checkout, Node setup with lockfile caching, install (`npm ci`, `pnpm install --frozen-lockfile`, or `yarn install --frozen-lockfile`), then `test` (if defined) and `build`.
 
 When `documentation_provider` is **`mkdocs`**, `.github/workflows/docs.yml` also publishes MkDocs to the **`gh-pages`** branch on pushes that touch `docs/**` or `mkdocs.yml` (enable GitHub Pages on that branch in repo settings).
 
@@ -225,7 +225,7 @@ cookiecutter /path/to/django-cookie-cutter
 
 ### 💬 Prompts
 
-Cookiecutter asks variables **in the order they appear in `cookiecutter.json`**: project metadata first, then Django/backend, database, cache and Celery, frontend, then cloud and docs.
+Cookiecutter asks variables **in the order they appear in `cookiecutter.json`**: project metadata first, then Django/backend, database, cache and Celery, **`frontend_stack`** (single list: framework + versions — no separate prompts for unused stacks), then Node tooling, then cloud and docs. Private **`__*`** keys in `cookiecutter.json` derive **`__frontend_framework`** and major fields for templates and are not prompted.
 
 | Variable                 | Description                                                                                                                                                                     |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -251,14 +251,8 @@ Cookiecutter asks variables **in the order they appear in `cookiecutter.json`**:
 | `use_celery`             | `y` / `n`                                                                                                                                                                       |
 | `celery_broker`          | `redis` or `rabbitmq` — when `use_celery` is `y`                                                                                                                                 |
 | **Frontend** | |
-| `frontend_framework`     | `none`, `htmx`, `vue`, `react`, `nuxt`, `next`                                                                                                                                  |
-| `vue_major_version`      | `3` — when `frontend_framework` is `vue`, dependencies use **caret major** ranges (e.g. `^3`) so installs pick the latest **3.x**                                                                                    |
-| `vite_major_version`     | `6` or `5` — when `frontend_framework` is `vue` or `react` (`^6` / `^5` for Vite and matching Vitest major)                                                                                                               |
-| `react_major_version`    | `18` or `19` — when `frontend_framework` is `react` (`^18` / `^19` for React and matching `@types/*`)                                                                                                                      |
-| `nuxt_major_version`     | `3` or `4` — when `frontend_framework` is `nuxt` (`^3` / `^4` for Nuxt, `^3` for Vue, `^4` / `^5` for vue-router)                                                                                                                          |
-| `next_major_version`     | `15` or `14` — when `frontend_framework` is `next` (`^14` / `^15` for Next; `^18` / `^19` for React to match)                                                                        |
-| `htmx_major_version`     | `2` or `1` — used when `frontend_framework` is `htmx` (CDN URL + SRI in `backend/templates/base.html`)                                                                       |
-| `node_version`           | `20`, `22`, `24`, `25`, or `26` — when `frontend_framework` is `vue`, `react`, `nuxt`, or `next`                                                                                |
+| `frontend_stack`         | **Single prompt:** `none` · `htmx_2` / `htmx_1` · `vue_3_vite_6` / `vue_3_vite_5` · `react_18_vite_6` / `react_18_vite_5` / `react_19_vite_6` / `react_19_vite_5` · `nuxt_3` / `nuxt_4` · `next_15` / `next_14`. Underscore tokens encode framework + majors (e.g. `react_19_vite_5` → React **19**, Vite **5**). Templates use derived **`__frontend_framework`** / **`__*`** keys from `cookiecutter.json` (not prompted). |
+| `node_version`           | `20`, `22`, `24`, `25`, or `26` — when `frontend_stack` is a Node SPA (`vue_*`, `react_*`, `nuxt_*`, `next_*`)                                                                                |
 | `node_package_manager`   | `npm`, `pnpm`, or `yarn` — same scope as `node_version`                                                                                                                          |
 | **Cloud & docs** | |
 | `cloud_provider`         | `none`, `aws`, `gcp`, `azure`, `heroku`, `digitalocean`                                                                                                                         |
@@ -269,7 +263,7 @@ Cookiecutter asks variables **in the order they appear in `cookiecutter.json`**:
 ## 🗂️ Template layout
 
 - 📁 `{{ cookiecutter.project_slug }}/` — rendered repo with root **`LICENSE`**, **`.editorconfig`**, `docker/backend/Dockerfile`, optional `docker/frontend/` (Node SPA only), `backend/` (Django in `src/` + uv, optional **`backend/tox.ini`** when `use_tox` is `y`), optional `frontend/`, and `deploy/`
-- 🔍 `hooks/pre_gen_project.py` — Django / Python version compatibility checks; validates frontend **major** version choices (`vue_major_version`, `vite_major_version`, `react_major_version`, `nuxt_major_version`, `next_major_version`, `htmx_major_version`)
+- 🔍 `hooks/pre_gen_project.py` — Django / Python version compatibility checks; validates **`frontend_stack`** against the allowed combined values in `cookiecutter.json`
 - ✂️ `hooks/post_gen_project.py` — prune options, documentation scaffold, SPA lockfiles, optional Tox file, `backend/locale/` when `use_i18n` is `n`, `uv sync`
 - ⚙️ `cookiecutter.json` — defaults and `_copy_without_render` for Vue/React sources that contain literal `{{` … `}}` mustaches
 
@@ -279,7 +273,7 @@ A short terminal recording ([asciinema](https://asciinema.org/) or a GIF) of run
 
 ## 🛠️ Customizing this template
 
-- **Prompts and defaults** live in [`cookiecutter.json`](cookiecutter.json). Keep **key order** as users see it at the terminal: generic project fields → Django/backend → database → cache/Celery → `frontend_framework` → **frontend major versions** (`vue_major_version`, `vite_major_version`, `react_major_version`, `nuxt_major_version`, `next_major_version`, `htmx_major_version`) → `node_version` / `node_package_manager` → cloud/docs → `_copy_without_render` last. New keys should have sensible defaults and be read in `hooks/pre_gen_project.py` / `hooks/post_gen_project.py` when they affect validation or pruning (for example `openapi_schema` is validated against `api_project`, and frontend majors are validated in `pre_gen_project.py`).
+- **Prompts and defaults** live in [`cookiecutter.json`](cookiecutter.json). Keep **key order** as users see it at the terminal: generic project fields → Django/backend → database → cache/Celery → **`frontend_stack`** (one choice for framework + versions) → **`__*`** derived keys (not prompted; Cookiecutter renders them into the context for templates) → `node_version` / `node_package_manager` → cloud/docs → optional **`__prompts__`** labels → **`_copy_without_render`** last. New keys should be read in `hooks/pre_gen_project.py` / `hooks/post_gen_project.py` when they affect validation or pruning (for example `openapi_schema` vs `api_project`, and **`frontend_stack`** membership).
 - **Conditional files** use Jinja2 (`{% if cookiecutter… %}`) inside `{{ cookiecutter.project_slug }}/`. Keep branches in sync with what `post_gen_project.py` removes so generated trees stay minimal.
 - **Do not process** Vue/React/Nuxt/Next sources that contain literal `{{` … `}}` as template syntax: extend `_copy_without_render` in `cookiecutter.json` when adding new globs.
 - **Test locally** with `cookiecutter /absolute/path/to/django-cookie-cutter --no-input` (uses defaults from `cookiecutter.json`) or a [replay file](https://cookiecutter.readthedocs.io/en/latest/advanced/replay.html) (`--replay` / `--replay-file`), then inspect the output directory.
@@ -290,7 +284,7 @@ A short terminal recording ([asciinema](https://asciinema.org/) or a GIF) of run
 It is the Cookiecutter *source*. Only the generated `<project_slug>/` tree is a project you `cd` into and run.
 
 **Why did `pre_gen_project` exit with an error?**  
-Unsupported pairs (for example Django and Python versions that do not match upstream support) and invalid combinations are rejected before files are created. Open `hooks/pre_gen_project.py` for the exact rules.
+Unsupported pairs (for example Django and Python versions that do not match upstream support), an unknown **`frontend_stack`** value, and other invalid combinations are rejected before files are created. Open `hooks/pre_gen_project.py` for the exact rules.
 
 **Why did post-generation `uv sync` not run?**  
 `post_gen_project.py` runs `uv sync` only when the `uv` executable is available on your `PATH` at generation time. You can always `cd <project_slug>/backend && uv sync` manually.

@@ -1,4 +1,4 @@
-{% if cookiecutter.frontend_framework in ["vue", "react", "nuxt", "next"] %}# syntax=docker/dockerfile:1
+{% if cookiecutter['__frontend_framework'] in ["vue", "react", "nuxt", "next"] %}# syntax=docker/dockerfile:1
 # Node frontend — dev-oriented image for Docker Compose (install + dev server).
 # Build from repository root: docker compose build frontend
 
@@ -11,12 +11,12 @@ RUN apt-get update \
 
 RUN corepack enable
 
-WORKDIR /app/frontend/{{ cookiecutter.frontend_framework }}
+WORKDIR /app/frontend/{{ cookiecutter['__frontend_framework'] }}
 
 LABEL org.opencontainers.image.title="{{ cookiecutter.project_name }} frontend" \
-    org.opencontainers.image.description="Node {{ cookiecutter.node_version }} ({{ cookiecutter.frontend_framework }})"
+    org.opencontainers.image.description="Node {{ cookiecutter.node_version }} ({{ cookiecutter['__frontend_framework'] }})"
 
-{% if cookiecutter.frontend_framework in ["vue", "react"] %}
+{% if cookiecutter['__frontend_framework'] in ["vue", "react"] %}
 EXPOSE 5173
 {% else %}
 EXPOSE 3000

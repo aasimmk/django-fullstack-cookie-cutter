@@ -27,8 +27,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "guardian",
     "waffle",
-    {% if cookiecutter.frontend_framework == "htmx" %}"django_htmx",{% endif %}
-    {% if cookiecutter.frontend_framework in ["vue", "react"] %}"django_vite",{% endif %}
+    {% if cookiecutter['__frontend_framework'] == "htmx" %}"django_htmx",{% endif %}
+    {% if cookiecutter['__frontend_framework'] in ["vue", "react"] %}"django_vite",{% endif %}
     "src.apps.users",
     {% if cookiecutter.use_celery == "y" %}
     "django_celery_beat",
@@ -61,7 +61,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "waffle.middleware.WaffleMiddleware",
-    {% if cookiecutter.frontend_framework == "htmx" %}"django_htmx.middleware.HtmxMiddleware",{% endif %}
+    {% if cookiecutter['__frontend_framework'] == "htmx" %}"django_htmx.middleware.HtmxMiddleware",{% endif %}
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -136,7 +136,7 @@ LOCALE_PATHS = [BASE_DIR / "locale"]
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS: list[Path] = []
-{% if cookiecutter.frontend_framework in ["vue", "react"] %}
+{% if cookiecutter['__frontend_framework'] in ["vue", "react"] %}
 STATICFILES_DIRS.append(BASE_DIR / "static" / "dist")
 {% endif %}
 
@@ -152,7 +152,7 @@ AUTHENTICATION_BACKENDS = (
     "guardian.backends.ObjectPermissionBackend",
 )
 
-{% if cookiecutter.frontend_framework in ["vue", "react"] %}
+{% if cookiecutter['__frontend_framework'] in ["vue", "react"] %}
 DJANGO_VITE = {
     "default": {
         "dev_mode": env.get_bool("DJANGO_VITE_DEV_MODE", default=False, required=False),
@@ -208,10 +208,10 @@ CORS_ALLOWED_ORIGINS = env.get_list(
     default=[
         "http://127.0.0.1:8000",
         "http://localhost:8000",
-        {% if cookiecutter.frontend_framework in ["vue", "react"] %}
+        {% if cookiecutter['__frontend_framework'] in ["vue", "react"] %}
         "http://127.0.0.1:5173",
         "http://localhost:5173",
-        {% elif cookiecutter.frontend_framework in ["nuxt", "next"] %}
+        {% elif cookiecutter['__frontend_framework'] in ["nuxt", "next"] %}
         "http://127.0.0.1:3000",
         "http://localhost:3000",
         {% endif %}

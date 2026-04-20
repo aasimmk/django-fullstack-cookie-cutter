@@ -18,7 +18,7 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-{% if cookiecutter.react_major_version == "19" %}
+{% if cookiecutter['__react_major_version'] == "19" %}
     "react": "^19",
     "react-dom": "^19"
 {% else %}
@@ -30,7 +30,7 @@
     "@playwright/test": "^1.49.1",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.0.1",
-{% if cookiecutter.react_major_version == "19" %}
+{% if cookiecutter['__react_major_version'] == "19" %}
     "@types/react": "^19",
     "@types/react-dom": "^19",
 {% else %}
@@ -43,7 +43,7 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.16",
     "typescript": "~5.6.3",
-{% if cookiecutter.vite_major_version == "6" %}
+{% if cookiecutter['__vite_major_version'] == "6" %}
     "vite": "^6",
     "vitest": "^3"
 {% else %}

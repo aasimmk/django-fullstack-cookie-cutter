@@ -6,11 +6,11 @@ Use these as reference prompts/steps when working with Claude Code.
 1. Read `AGENTS.md`.
 2. Identify relevant app/module:
    - Backend: `backend/src/apps/...`
-{% if cookiecutter.frontend_framework in ["vue", "react"] %}
-   - Frontend: `frontend/{{ cookiecutter.frontend_framework }}/src/...`
-{% elif cookiecutter.frontend_framework == "nuxt" %}
+{% if cookiecutter['__frontend_framework'] in ["vue", "react"] %}
+   - Frontend: `frontend/{{ cookiecutter['__frontend_framework'] }}/src/...`
+{% elif cookiecutter['__frontend_framework'] == "nuxt" %}
    - Frontend: `frontend/nuxt/` (`app.vue`, `nuxt.config.ts`, …)
-{% elif cookiecutter.frontend_framework == "next" %}
+{% elif cookiecutter['__frontend_framework'] == "next" %}
    - Frontend: `frontend/next/app/...`
 {% endif %}
 3. Locate existing tests first.
@@ -24,16 +24,16 @@ Use these as reference prompts/steps when working with Claude Code.
    - `cd backend && uv run pytest`
 
 ## 3) Implement frontend change
-{% if cookiecutter.frontend_framework in ["vue", "react"] %}
-1. Edit `frontend/{{ cookiecutter.frontend_framework }}/src/...`.
-2. Update tests under `frontend/{{ cookiecutter.frontend_framework }}/tests/unit`, `tests/integration`, or `tests/e2e` (Playwright).
+{% if cookiecutter['__frontend_framework'] in ["vue", "react"] %}
+1. Edit `frontend/{{ cookiecutter['__frontend_framework'] }}/src/...`.
+2. Update tests under `frontend/{{ cookiecutter['__frontend_framework'] }}/tests/unit`, `tests/integration`, or `tests/e2e` (Playwright).
 3. Run:
-   - `cd frontend/{{ cookiecutter.frontend_framework }} && {% if cookiecutter.node_package_manager == "npm" %}npm run test{% elif cookiecutter.node_package_manager == "pnpm" %}pnpm run test{% else %}yarn run test{% endif %}`
-   - `cd frontend/{{ cookiecutter.frontend_framework }} && {% if cookiecutter.node_package_manager == "npm" %}npm run build{% elif cookiecutter.node_package_manager == "pnpm" %}pnpm run build{% else %}yarn run build{% endif %}`
-{% elif cookiecutter.frontend_framework in ["nuxt", "next"] %}
-1. Edit `frontend/{{ cookiecutter.frontend_framework }}/` sources.
+   - `cd frontend/{{ cookiecutter['__frontend_framework'] }} && {% if cookiecutter.node_package_manager == "npm" %}npm run test{% elif cookiecutter.node_package_manager == "pnpm" %}pnpm run test{% else %}yarn run test{% endif %}`
+   - `cd frontend/{{ cookiecutter['__frontend_framework'] }} && {% if cookiecutter.node_package_manager == "npm" %}npm run build{% elif cookiecutter.node_package_manager == "pnpm" %}pnpm run build{% else %}yarn run build{% endif %}`
+{% elif cookiecutter['__frontend_framework'] in ["nuxt", "next"] %}
+1. Edit `frontend/{{ cookiecutter['__frontend_framework'] }}/` sources.
 2. Update `tests/unit` and `tests/e2e` as needed.
-3. Run the same `test` / `build` commands as in `AGENTS.md` (from `frontend/{{ cookiecutter.frontend_framework }}/`).
+3. Run the same `test` / `build` commands as in `AGENTS.md` (from `frontend/{{ cookiecutter['__frontend_framework'] }}/`).
 {% else %}
 1. Edit Django templates/views.
 2. Verify behavior with Django tests and local runserver.

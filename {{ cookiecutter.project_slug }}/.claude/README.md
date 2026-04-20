@@ -9,13 +9,13 @@ This directory is for Claude Code-specific project helpers.
 
 ## Current project profile
 - Backend: Django in `backend/src`
-{% if cookiecutter.frontend_framework in ["vue", "react"] %}
-- Frontend: `frontend/{{ cookiecutter.frontend_framework }}` (Vite + django-vite)
-{% elif cookiecutter.frontend_framework == "nuxt" %}
+{% if cookiecutter['__frontend_framework'] in ["vue", "react"] %}
+- Frontend: `frontend/{{ cookiecutter['__frontend_framework'] }}` (Vite + django-vite)
+{% elif cookiecutter['__frontend_framework'] == "nuxt" %}
 - Frontend: `frontend/nuxt` (Nuxt 3, port 3000)
-{% elif cookiecutter.frontend_framework == "next" %}
+{% elif cookiecutter['__frontend_framework'] == "next" %}
 - Frontend: `frontend/next` (Next.js App Router, port 3000)
-{% elif cookiecutter.frontend_framework == "htmx" %}
+{% elif cookiecutter['__frontend_framework'] == "htmx" %}
 - Frontend style: HTMX + server-rendered templates
 {% else %}
 - Frontend style: server-rendered templates

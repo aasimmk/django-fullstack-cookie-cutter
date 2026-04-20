@@ -29,16 +29,16 @@ services:
 {% endif %}
 {% endif %}
 
-{% if cookiecutter.frontend_framework in ["vue", "react", "nuxt", "next"] %}
+{% if cookiecutter['__frontend_framework'] in ["vue", "react", "nuxt", "next"] %}
   frontend:
     build:
       context: .
       dockerfile: docker/frontend/Dockerfile
-    working_dir: /app/frontend/{{ cookiecutter.frontend_framework }}
+    working_dir: /app/frontend/{{ cookiecutter['__frontend_framework'] }}
     volumes:
       - .:/app
     ports:
-{% if cookiecutter.frontend_framework in ["vue", "react"] %}
+{% if cookiecutter['__frontend_framework'] in ["vue", "react"] %}
       - "5173:5173"
 {% else %}
       - "3000:3000"

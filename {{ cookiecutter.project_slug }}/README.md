@@ -2,7 +2,7 @@
 
 {{ cookiecutter.description }}
 
-**Layout:** `backend/` (Django project package `src/` + uv){% if cookiecutter.frontend_framework in ["vue", "react", "nuxt", "next"] %} and `frontend/{{ cookiecutter.frontend_framework }}/` ({% if cookiecutter.frontend_framework in ["vue", "react"] %}Vite + django-vite{% elif cookiecutter.frontend_framework == "nuxt" %}Nuxt 3{% else %}Next.js{% endif %}){% endif %} are siblings at the repo root.
+**Layout:** `backend/` (Django project package `src/` + uv){% if cookiecutter['__frontend_framework'] in ["vue", "react", "nuxt", "next"] %} and `frontend/{{ cookiecutter['__frontend_framework'] }}/` ({% if cookiecutter['__frontend_framework'] in ["vue", "react"] %}Vite + django-vite{% elif cookiecutter['__frontend_framework'] == "nuxt" %}Nuxt {{ cookiecutter['__nuxt_major_version'] }}{% else %}Next.js {{ cookiecutter['__next_major_version'] }}{% endif %}){% endif %} are siblings at the repo root.
 
 ## Index
 
@@ -61,18 +61,18 @@ This project was scaffolded with **django-cookie-cutter**. The sections below re
 
 ### Frontend & templates
 
-{% if cookiecutter.frontend_framework == "none" %}
+{% if cookiecutter['__frontend_framework'] == "none" %}
 - **Server-rendered Django templates** with **Tailwind CSS** via CDN in `backend/templates/base.html` (no separate Node app).
-{% elif cookiecutter.frontend_framework == "htmx" %}
-- **django-htmx** plus **HTMX {{ cookiecutter.htmx_major_version }}.x** (CDN in `backend/templates/base.html`) and **Tailwind CSS** from CDNs; partials and regular Django views drive the UI (no separate Node app).
-{% elif cookiecutter.frontend_framework == "vue" %}
-- **Vue {{ cookiecutter.vue_major_version }}** SPA with **Vite {{ cookiecutter.vite_major_version }}**, **Tailwind CSS**, **Vitest** (unit), and **Playwright** (e2e). **django-vite** bridges dev HMR and production manifests; build output is collected into **`backend/static/dist`**. Use **Node.js {{ cookiecutter.node_version }}** and **{{ cookiecutter.node_package_manager }}** (see `frontend/.nvmrc`).
-{% elif cookiecutter.frontend_framework == "react" %}
-- **React {{ cookiecutter.react_major_version }}** SPA with **Vite {{ cookiecutter.vite_major_version }}**, **Tailwind CSS**, **Vitest** (unit), and **Playwright** (e2e). **django-vite** bridges dev HMR and production manifests; build output is collected into **`backend/static/dist`**. Use **Node.js {{ cookiecutter.node_version }}** and **{{ cookiecutter.node_package_manager }}** (see `frontend/.nvmrc`).
-{% elif cookiecutter.frontend_framework == "nuxt" %}
-- **Nuxt {{ cookiecutter.nuxt_major_version }}** in **SPA mode** (`ssr: false`) with **Vitest** and **Playwright**. The app runs its own dev server on **port 3000** (not embedded via django-vite). Use **Node.js {{ cookiecutter.node_version }}** and **{{ cookiecutter.node_package_manager }}** (see `frontend/.nvmrc`). Call Django from the browser with **`api_project` = `y`** (CORS defaults include `http://127.0.0.1:3000`) or add your own CORS rules.
+{% elif cookiecutter['__frontend_framework'] == "htmx" %}
+- **django-htmx** plus **HTMX {{ cookiecutter['__htmx_major_version'] }}.x** (CDN in `backend/templates/base.html`) and **Tailwind CSS** from CDNs; partials and regular Django views drive the UI (no separate Node app).
+{% elif cookiecutter['__frontend_framework'] == "vue" %}
+- **Vue {{ cookiecutter['__vue_major_version'] }}** SPA with **Vite {{ cookiecutter['__vite_major_version'] }}**, **Tailwind CSS**, **Vitest** (unit), and **Playwright** (e2e). **django-vite** bridges dev HMR and production manifests; build output is collected into **`backend/static/dist`**. Use **Node.js {{ cookiecutter.node_version }}** and **{{ cookiecutter.node_package_manager }}** (see `frontend/.nvmrc`).
+{% elif cookiecutter['__frontend_framework'] == "react" %}
+- **React {{ cookiecutter['__react_major_version'] }}** SPA with **Vite {{ cookiecutter['__vite_major_version'] }}**, **Tailwind CSS**, **Vitest** (unit), and **Playwright** (e2e). **django-vite** bridges dev HMR and production manifests; build output is collected into **`backend/static/dist`**. Use **Node.js {{ cookiecutter.node_version }}** and **{{ cookiecutter.node_package_manager }}** (see `frontend/.nvmrc`).
+{% elif cookiecutter['__frontend_framework'] == "nuxt" %}
+- **Nuxt {{ cookiecutter['__nuxt_major_version'] }}** in **SPA mode** (`ssr: false`) with **Vitest** and **Playwright**. The app runs its own dev server on **port 3000** (not embedded via django-vite). Use **Node.js {{ cookiecutter.node_version }}** and **{{ cookiecutter.node_package_manager }}** (see `frontend/.nvmrc`). Call Django from the browser with **`api_project` = `y`** (CORS defaults include `http://127.0.0.1:3000`) or add your own CORS rules.
 {% else %}
-- **Next.js {{ cookiecutter.next_major_version }}** (App Router) with **React {% if cookiecutter.next_major_version == "14" %}18{% else %}19{% endif %}**, **Vitest**, and **Playwright**. Same **port 3000** / **no django-vite** integration pattern as Nuxt: Django stays on **8000**, CORS defaults include the dev UI when **`api_project`** is enabled.
+- **Next.js {{ cookiecutter['__next_major_version'] }}** (App Router) with **React {% if cookiecutter['__next_major_version'] == "14" %}18{% else %}19{% endif %}**, **Vitest**, and **Playwright**. Same **port 3000** / **no django-vite** integration pattern as Nuxt: Django stays on **8000**, CORS defaults include the dev UI when **`api_project`** is enabled.
 {% endif %}
 
 ### Cache, tasks, and messaging
@@ -91,7 +91,7 @@ This project was scaffolded with **django-cookie-cutter**. The sections below re
 ### Deployment & infrastructure
 
 {% if cookiecutter.cloud_provider == "none" %}
-- **Cloud bundle:** `none` — this repo ships **Docker Compose** for local parity (**`backend`**{% if cookiecutter.frontend_framework in ["vue", "react", "nuxt", "next"] %} + **`frontend`**{% endif %}{% if cookiecutter.use_postgresql == "y" %} + Postgres{% endif %}{% if cookiecutter.use_redis_cache == "y" or cookiecutter.use_celery == "y" %} + Redis/RabbitMQ as selected{% endif %}). Add your own IaC when you pick a host.
+- **Cloud bundle:** `none` — this repo ships **Docker Compose** for local parity (**`backend`**{% if cookiecutter['__frontend_framework'] in ["vue", "react", "nuxt", "next"] %} + **`frontend`**{% endif %}{% if cookiecutter.use_postgresql == "y" %} + Postgres{% endif %}{% if cookiecutter.use_redis_cache == "y" or cookiecutter.use_celery == "y" %} + Redis/RabbitMQ as selected{% endif %}). Add your own IaC when you pick a host.
 {% elif cookiecutter.cloud_provider == "aws" %}
 - **AWS** starter under **`deploy/aws/terraform/`** (minimal modules; extend with your VPC, RDS, ElastiCache, etc.).
 {% elif cookiecutter.cloud_provider == "gcp" %}
@@ -107,7 +107,7 @@ This project was scaffolded with **django-cookie-cutter**. The sections below re
 ### Quality gates & automation
 
 - **Ruff** (lint + format), **pytest** + **pytest-django** + **pytest-cov**, and **mypy** with **django-stubs** in the backend dev dependency group.
-- **GitHub Actions** (`.github/workflows/ci.yml`): `uv sync`, Ruff, migration check, pytest{% if cookiecutter.use_tox == "y" %}, then **Tox** (`py`, `ruff`, `migrate` envs){% endif %}{% if cookiecutter.frontend_framework in ["vue", "react", "nuxt", "next"] %}; a separate job installs Node deps under `frontend/{{ cookiecutter.frontend_framework }}/` and runs tests + production build{% endif %}.
+- **GitHub Actions** (`.github/workflows/ci.yml`): `uv sync`, Ruff, migration check, pytest{% if cookiecutter.use_tox == "y" %}, then **Tox** (`py`, `ruff`, `migrate` envs){% endif %}{% if cookiecutter['__frontend_framework'] in ["vue", "react", "nuxt", "next"] %}; a separate job installs Node deps under `frontend/{{ cookiecutter['__frontend_framework'] }}/` and runs tests + production build{% endif %}.
 {% if cookiecutter.documentation_provider == "mkdocs" %}
 - **Docs CI:** `.github/workflows/docs.yml` builds **MkDocs** and publishes to **`gh-pages`** when `docs/` or `mkdocs.yml` changes.
 {% endif %}
@@ -204,7 +204,7 @@ Bundled **OpenAPI / Swagger / ReDoc** routes are off when `openapi_schema` is `n
 | `DJANGO_SETTINGS_MODULE`   | When to use                                                                                                   |
 |----------------------------|---------------------------------------------------------------------------------------------------------------|
 | `src.settings.local`       | Default in `manage.py` — same as `development`                                                                |
-| `src.settings.development` | Debug on, console email{% if cookiecutter.frontend_framework in ["vue", "react"] %}; **django-vite** dev mode (Vite on :5173){% elif cookiecutter.frontend_framework in ["nuxt", "next"] %} (run Nuxt/Next separately on :3000){% endif %} |
+| `src.settings.development` | Debug on, console email{% if cookiecutter['__frontend_framework'] in ["vue", "react"] %}; **django-vite** dev mode (Vite on :5173){% elif cookiecutter['__frontend_framework'] in ["nuxt", "next"] %} (run Nuxt/Next separately on :3000){% endif %} |
 | `src.settings.staging`     | Pre-production: `SECRET_KEY` required, HTTPS-oriented cookies, optional HSTS via `DJANGO_SECURE_HSTS_SECONDS` |
 | `src.settings.production`  | Live deployment                                                                                               |
 
@@ -235,13 +235,13 @@ Environment variables are read from `os.environ` after `backend/.env` is loaded 
 
 ## Frontend
 
-**Mode:** `{{ cookiecutter.frontend_framework }}`{% if cookiecutter.frontend_framework in ["vue", "react", "nuxt", "next"] %} · **Node:** {{ cookiecutter.node_version }} · **Package manager:** {{ cookiecutter.node_package_manager }}{% endif %}.
+**Mode:** `{{ cookiecutter['__frontend_framework'] }}`{% if cookiecutter['__frontend_framework'] in ["vue", "react", "nuxt", "next"] %} · **Node:** {{ cookiecutter.node_version }} · **Package manager:** {{ cookiecutter.node_package_manager }}{% endif %}.
 
-{% if cookiecutter.frontend_framework in ["vue", "react"] %}
+{% if cookiecutter['__frontend_framework'] in ["vue", "react"] %}
 The SPA is embedded from Django templates via **django-vite**; Vite listens on **:5173** in development.
 
 ```bash
-cd frontend/{{ cookiecutter.frontend_framework }}
+cd frontend/{{ cookiecutter['__frontend_framework'] }}
 {% if cookiecutter.node_package_manager == "npm" %}npm ci
 npm run dev   # Vite on :5173 — run Django from ../backend on :8000
 npm run build # writes assets to backend/static/dist for django-vite
@@ -259,11 +259,11 @@ yarn run test  # Vitest (`tests/unit`, `tests/integration`)
 yarn run test:e2e  # Playwright — `tests/e2e`
 {% endif %}
 ```
-{% elif cookiecutter.frontend_framework in ["nuxt", "next"] %}
+{% elif cookiecutter['__frontend_framework'] in ["nuxt", "next"] %}
 **Nuxt** and **Next.js** run as **separate Node servers on port 3000** (Django remains on **:8000**). There is no django-vite bridge: use session/API calls against Django with CORS (defaults include :3000 when **`api_project`** is `y`).
 
 ```bash
-cd frontend/{{ cookiecutter.frontend_framework }}
+cd frontend/{{ cookiecutter['__frontend_framework'] }}
 {% if cookiecutter.node_package_manager == "npm" %}npm ci
 npm run dev   # Nuxt or Next on :3000
 npm run build
@@ -281,7 +281,7 @@ yarn run test
 yarn run test:e2e
 {% endif %}
 ```
-{% elif cookiecutter.frontend_framework == "htmx" %}
+{% elif cookiecutter['__frontend_framework'] == "htmx" %}
 HTMX is loaded from the CDN in `backend/templates/base.html`. Use Django views and partials as usual.
 {% else %}
 Templates use Tailwind via CDN in `backend/templates/base.html`.
@@ -290,8 +290,8 @@ Templates use Tailwind via CDN in `backend/templates/base.html`.
 ## Docker
 
 Compose mounts the repo at `/app`. The **`backend`** service is built from [`docker/backend/Dockerfile`](docker/backend/Dockerfile) (Python + uv), uses `working_dir: /app/backend`, and exposes **:8000**.
-{% if cookiecutter.frontend_framework in ["vue", "react", "nuxt", "next"] %}
-The **`frontend`** service is built from [`docker/frontend/Dockerfile`](docker/frontend/Dockerfile) (**Node {{ cookiecutter.node_version }}**), uses `working_dir: /app/frontend/{{ cookiecutter.frontend_framework }}`, runs **`{{ cookiecutter.node_package_manager }} install`** then **`dev`** via the image `CMD`, and maps **{% if cookiecutter.frontend_framework in ["vue", "react"] %}:5173{% else %}:3000{% endif %}** to your host. It **`depends_on`** **`backend`** (`service_started`) so the stack comes up in a sensible order.
+{% if cookiecutter['__frontend_framework'] in ["vue", "react", "nuxt", "next"] %}
+The **`frontend`** service is built from [`docker/frontend/Dockerfile`](docker/frontend/Dockerfile) (**Node {{ cookiecutter.node_version }}**), uses `working_dir: /app/frontend/{{ cookiecutter['__frontend_framework'] }}`, runs **`{{ cookiecutter.node_package_manager }} install`** then **`dev`** via the image `CMD`, and maps **{% if cookiecutter['__frontend_framework'] in ["vue", "react"] %}:5173{% else %}:3000{% endif %}** to your host. It **`depends_on`** **`backend`** (`service_started`) so the stack comes up in a sensible order.
 {% endif %}
 
 ```bash

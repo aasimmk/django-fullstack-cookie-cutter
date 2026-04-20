@@ -38,14 +38,14 @@ alwaysApply: true
 {% endif %}
 
 ## Frontend Rules
-{% if cookiecutter.frontend_framework in ["vue", "react"] %}
-- Frontend project is `frontend/{{ cookiecutter.frontend_framework }}`.
+{% if cookiecutter['__frontend_framework'] in ["vue", "react"] %}
+- Frontend project is `frontend/{{ cookiecutter['__frontend_framework'] }}`.
 - Build output must target `backend/static/dist` (**django-vite**).
-{% elif cookiecutter.frontend_framework == "nuxt" %}
+{% elif cookiecutter['__frontend_framework'] == "nuxt" %}
 - Frontend project is `frontend/nuxt/`. Dev server on **:3000**; coordinate with Django on **:8000** and CORS when calling the API.
-{% elif cookiecutter.frontend_framework == "next" %}
+{% elif cookiecutter['__frontend_framework'] == "next" %}
 - Frontend project is `frontend/next/`. Same **:3000** / **:8000** split as Nuxt; no django-vite.
-{% elif cookiecutter.frontend_framework == "htmx" %}
+{% elif cookiecutter['__frontend_framework'] == "htmx" %}
 - Prefer progressive enhancement with HTMX + Django templates.
 {% else %}
 - Keep UX server-rendered unless requirements explicitly need SPA behavior.
@@ -55,10 +55,10 @@ alwaysApply: true
 - Backend checks:
   - `cd backend && uv run ruff check .`
   - `cd backend && uv run pytest` (markers: `unit`, `integration`, `e2e`; layout under `backend/tests/{unit,integration,e2e}/`)
-{% if cookiecutter.frontend_framework in ["vue", "react", "nuxt", "next"] %}
+{% if cookiecutter['__frontend_framework'] in ["vue", "react", "nuxt", "next"] %}
 - Frontend checks:
-  - `cd frontend/{{ cookiecutter.frontend_framework }} && {% if cookiecutter.node_package_manager == "npm" %}npm run test{% elif cookiecutter.node_package_manager == "pnpm" %}pnpm run test{% else %}yarn run test{% endif %}`
-  - `cd frontend/{{ cookiecutter.frontend_framework }} && {% if cookiecutter.node_package_manager == "npm" %}npm run build{% elif cookiecutter.node_package_manager == "pnpm" %}pnpm run build{% else %}yarn run build{% endif %}`
+  - `cd frontend/{{ cookiecutter['__frontend_framework'] }} && {% if cookiecutter.node_package_manager == "npm" %}npm run test{% elif cookiecutter.node_package_manager == "pnpm" %}pnpm run test{% else %}yarn run test{% endif %}`
+  - `cd frontend/{{ cookiecutter['__frontend_framework'] }} && {% if cookiecutter.node_package_manager == "npm" %}npm run build{% elif cookiecutter.node_package_manager == "pnpm" %}pnpm run build{% else %}yarn run build{% endif %}`
 {% endif %}
 
 ## Guardrails for Contributors and Agents

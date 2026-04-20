@@ -18,10 +18,10 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "gunicorn>=23.0.0",
     "whitenoise>=6.7.0",
-{% if cookiecutter.frontend_framework == "htmx" %}
+{% if cookiecutter['__frontend_framework'] == "htmx" %}
     "django-htmx>=1.21.0",
 {% endif %}
-{% if cookiecutter.frontend_framework in ["vue", "react"] %}
+{% if cookiecutter['__frontend_framework'] in ["vue", "react"] %}
     "django-vite>=3.0.0",
 {% endif %}
 {% if cookiecutter.use_postgresql == "y" %}

@@ -8,13 +8,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{% endblock %}</title>
   <script src="https://cdn.tailwindcss.com"></script>
-{% endraw %}{% if cookiecutter.frontend_framework == "htmx" %}
-{% if cookiecutter.htmx_major_version == "2" %}
+{% endraw %}{% if cookiecutter['__frontend_framework'] == "htmx" %}
+{% if cookiecutter['__htmx_major_version'] == "2" %}
   <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-D1Kt99CQMDu/vetoBmiYQ365Lq7fx+hbRAyO9FQXrw5mipRvK8E+K/Oth8J2reCH" crossorigin="anonymous"></script>
 {% else %}
   <script src="https://unpkg.com/htmx.org@1.9.12/dist/htmx.min.js" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
 {% endif %}
-{% endif %}{% if cookiecutter.frontend_framework in ["vue", "react"] %}{% raw %}
+{% endif %}{% if cookiecutter['__frontend_framework'] in ["vue", "react"] %}{% raw %}
   {% load django_vite %}
   {% vite_hmr_client %}
 {% endraw %}{% endif %}{% raw %}

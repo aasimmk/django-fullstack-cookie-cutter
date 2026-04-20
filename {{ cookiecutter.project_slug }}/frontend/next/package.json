@@ -9,7 +9,7 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-{% if cookiecutter.next_major_version == "14" %}
+{% if cookiecutter['__next_major_version'] == "14" %}
     "next": "^14",
     "react": "^18",
     "react-dom": "^18"
@@ -22,7 +22,7 @@
   "devDependencies": {
     "@playwright/test": "^1.49.1",
     "@types/node": "^22",
-{% if cookiecutter.next_major_version == "14" %}
+{% if cookiecutter['__next_major_version'] == "14" %}
     "@types/react": "^18",
     "@types/react-dom": "^18",
 {% else %}

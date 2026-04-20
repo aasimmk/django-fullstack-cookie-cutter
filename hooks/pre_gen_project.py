@@ -14,12 +14,7 @@ use_tox = "{{ cookiecutter.use_tox }}"
 api_project = "{{ cookiecutter.api_project }}"
 openapi_schema = "{{ cookiecutter.openapi_schema }}"
 use_i18n = "{{ cookiecutter.use_i18n }}"
-vue_major_version = "{{ cookiecutter.vue_major_version }}"
-vite_major_version = "{{ cookiecutter.vite_major_version }}"
-react_major_version = "{{ cookiecutter.react_major_version }}"
-nuxt_major_version = "{{ cookiecutter.nuxt_major_version }}"
-next_major_version = "{{ cookiecutter.next_major_version }}"
-htmx_major_version = "{{ cookiecutter.htmx_major_version }}"
+frontend_stack = "{{ cookiecutter.frontend_stack }}"
 
 ALLOWED_POSTGRES_VERSIONS = frozenset({"15", "16", "17", "18"})
 ALLOWED_CELERY_BROKERS = frozenset({"redis", "rabbitmq"})
@@ -30,12 +25,23 @@ ALLOWED_TOX = frozenset({"n", "y"})
 ALLOWED_USE_I18N = frozenset({"n", "y"})
 ALLOWED_OPENAPI_SCHEMA = frozenset({"none", "drf-spectacular", "drf-yasg"})
 
-ALLOWED_VUE_MAJOR = frozenset({"3"})
-ALLOWED_VITE_MAJOR = frozenset({"5", "6"})
-ALLOWED_REACT_MAJOR = frozenset({"18", "19"})
-ALLOWED_NUXT_MAJOR = frozenset({"3", "4"})
-ALLOWED_NEXT_MAJOR = frozenset({"14", "15"})
-ALLOWED_HTMX_MAJOR = frozenset({"1", "2"})
+ALLOWED_FRONTEND_STACK = frozenset(
+    {
+        "none",
+        "htmx_2",
+        "htmx_1",
+        "vue_3_vite_6",
+        "vue_3_vite_5",
+        "react_18_vite_6",
+        "react_18_vite_5",
+        "react_19_vite_6",
+        "react_19_vite_5",
+        "nuxt_3",
+        "nuxt_4",
+        "next_15",
+        "next_14",
+    },
+)
 
 ALLOWED_LICENSES = frozenset(
     {
@@ -138,37 +144,12 @@ def validate_postgres_version(version: str) -> None:
         )
 
 
-def validate_frontend_majors() -> None:
-    """Ensure framework major-version choices are allowed and match frontend_framework."""
-    if vue_major_version not in ALLOWED_VUE_MAJOR:
+def validate_frontend_stack() -> None:
+    """Ensure frontend_stack is a supported framework + version combination."""
+    if frontend_stack not in ALLOWED_FRONTEND_STACK:
         raise ValueError(
-            f"vue_major_version must be one of {sorted(ALLOWED_VUE_MAJOR)}, "
-            f"got {vue_major_version!r}"
-        )
-    if vite_major_version not in ALLOWED_VITE_MAJOR:
-        raise ValueError(
-            f"vite_major_version must be one of {sorted(ALLOWED_VITE_MAJOR)}, "
-            f"got {vite_major_version!r}"
-        )
-    if react_major_version not in ALLOWED_REACT_MAJOR:
-        raise ValueError(
-            f"react_major_version must be one of {sorted(ALLOWED_REACT_MAJOR)}, "
-            f"got {react_major_version!r}"
-        )
-    if nuxt_major_version not in ALLOWED_NUXT_MAJOR:
-        raise ValueError(
-            f"nuxt_major_version must be one of {sorted(ALLOWED_NUXT_MAJOR)}, "
-            f"got {nuxt_major_version!r}"
-        )
-    if next_major_version not in ALLOWED_NEXT_MAJOR:
-        raise ValueError(
-            f"next_major_version must be one of {sorted(ALLOWED_NEXT_MAJOR)}, "
-            f"got {next_major_version!r}"
-        )
-    if htmx_major_version not in ALLOWED_HTMX_MAJOR:
-        raise ValueError(
-            f"htmx_major_version must be one of {sorted(ALLOWED_HTMX_MAJOR)}, "
-            f"got {htmx_major_version!r}"
+            "frontend_stack must be one of "
+            f"{sorted(ALLOWED_FRONTEND_STACK)}, got {frontend_stack!r}"
         )
 
 
@@ -190,7 +171,7 @@ def main() -> None:
     validate_use_i18n(use_i18n)
     validate_openapi_schema(openapi_schema)
     validate_api_openapi(api_project, openapi_schema)
-    validate_frontend_majors()
+    validate_frontend_stack()
 
 
 if __name__ == "__main__":

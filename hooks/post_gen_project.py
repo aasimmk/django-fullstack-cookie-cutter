@@ -165,13 +165,10 @@ def format_frontend_and_config() -> None:
                 )
 
     root_patterns = [
-        "*.yml",
-        "*.yaml",
-        "*.json",
-        "*.md",
-        ".github/**/*.yml",
-        "deploy/**/*.yml",
-        "deploy/**/*.yaml",
+        "**/*.yml",
+        "**/*.yaml",
+        "**/*.md",
+        "**/*.json",
     ]
     try:
         subprocess.run(

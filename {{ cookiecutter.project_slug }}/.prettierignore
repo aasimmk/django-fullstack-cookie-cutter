@@ -1,0 +1,15 @@
+# Package manager lock files (auto-generated, must not be manually formatted)
+**/package-lock.json
+**/pnpm-lock.yaml
+**/yarn.lock
+
+# Build output
+**/dist/
+**/.next/
+**/.nuxt/
+**/.output/
+
+# Python artifacts
+**/__pycache__/
+**/*.pyc
+**/.venv/

@@ -58,15 +58,18 @@ jobs:
 {% endif %}
 {% if cookiecutter.node_package_manager == "npm" %}
       - run: npm ci
+      - run: npm run format:check
       - run: npm run test --if-present
       - run: npm run build
 {% elif cookiecutter.node_package_manager == "pnpm" %}
       - run: pnpm install --frozen-lockfile
+      - run: pnpm run format:check
       - run: pnpm run test --if-present
       - run: pnpm run build
 {% else %}
       - run: corepack enable
       - run: yarn install --frozen-lockfile
+      - run: yarn run format:check
       - run: yarn run test --if-present
       - run: yarn run build
 {% endif %}

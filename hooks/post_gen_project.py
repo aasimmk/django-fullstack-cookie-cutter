@@ -144,6 +144,43 @@ def sync_frontend_lockfile() -> None:
         )
 
 
+def format_frontend_and_config() -> None:
+    """Format frontend and root-level YAML/JSON/Markdown files with Prettier."""
+    prettier_cmd = ["npx", "--yes", "prettier@latest", "--write"]
+
+    if FRONTEND in SPA_FRAMEWORKS:
+        app_dir = os.path.join(FRONTEND_DIR, FRONTEND)
+        if os.path.isdir(app_dir):
+            try:
+                subprocess.run(
+                    [*prettier_cmd, "."],
+                    cwd=app_dir,
+                    check=False,
+                    timeout=180,
+                )
+            except (FileNotFoundError, subprocess.TimeoutExpired):
+                print(
+                    "Skipping frontend prettier formatting (npx not found or timed out). "
+                    f"Run `npx prettier --write .` in {app_dir}.",
+                )
+
+    root_patterns = [
+        "**/*.yml",
+        "**/*.yaml",
+        "**/*.md",
+        "**/*.json",
+    ]
+    try:
+        subprocess.run(
+            [*prettier_cmd, *root_patterns],
+            cwd=ROOT,
+            check=False,
+            timeout=120,
+        )
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        print("Skipping root YAML/config formatting (npx not found or timed out).")
+
+
 def main() -> None:
     stamp_license_year()
 
@@ -217,6 +254,8 @@ def main() -> None:
         print(
             "Skipping uv sync (uv not found or timed out). Run `uv sync` in the backend/ directory.",
         )
+
+    format_frontend_and_config()
 
 
 if __name__ == "__main__":

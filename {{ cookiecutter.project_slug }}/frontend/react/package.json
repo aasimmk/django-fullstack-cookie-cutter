@@ -15,7 +15,9 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
 {% if cookiecutter['__react_major_version'] == "19" %}
@@ -38,6 +40,7 @@
     "@types/react-dom": "^18",
 {% endif %}
     "@vitejs/plugin-react": "^4",
+    "prettier": "^3.4.2",
     "autoprefixer": "^10.4.20",
     "jsdom": "^25.0.1",
     "postcss": "^8.4.49",

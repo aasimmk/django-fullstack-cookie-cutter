@@ -15,7 +15,9 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "vue": "^{{ cookiecutter['__vue_major_version'] }}"
@@ -23,6 +25,7 @@
   "devDependencies": {
     "@playwright/test": "^1.49.1",
     "@vitejs/plugin-vue": "^5",
+    "prettier": "^3.4.2",
     "@vue/test-utils": "^2.4.6",
     "autoprefixer": "^10.4.20",
     "jsdom": "^25.0.1",

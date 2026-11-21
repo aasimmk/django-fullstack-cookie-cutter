@@ -50,6 +50,7 @@
   "_copy_without_render": [
     "frontend/vue/**/*.vue",
     "frontend/react/**/*.tsx",
-    "frontend/react/**/*.css"
+    "frontend/react/**/*.css",
+    ".claude/scripts/*.py"
   ]
 }

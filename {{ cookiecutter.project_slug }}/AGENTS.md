@@ -146,8 +146,6 @@ Run from repository root unless stated otherwise.
 - Update tests when behavior changes.
 - Run relevant checks before finishing a task.
 - Never commit secrets (`.env`, API keys, credentials).
-- Claude Code: run `python .claude/scripts/sync_global_skills.py` to pull your global
-  skills into `.claude/skills/` (git-ignored); see `.claude/README.md`.
 
 ## Guardrails for Contributors and Agents
 

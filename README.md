@@ -180,7 +180,7 @@ Use the tables as a map from **what you pick at the prompt** to **what lands in 
 | Documentation host scaffold | `documentation_provider` | `none`, GitBook, Read the Docs + MkDocs, MkDocs + GitHub Pages, or Notion; extras removed in post_gen |
 | SPDX or proprietary license | `license` | Root `LICENSE` + `[project].license` in `backend/pyproject.toml`; year stamped in post_gen |
 | Shared editor rules | **Always** | Root `.editorconfig` |
-| AI / agent hints | **Always** | `AGENTS.md`, `.cursor/rules/project-guidelines.mdc`, `.claude/` snippets reflect your choices; `.claude/scripts/sync_global_skills.py` copies your global Claude Code skills into `.claude/skills/` (git-ignored) |
+| AI / agent hints | **Always** | `AGENTS.md`, `.cursor/rules/project-guidelines.mdc`, `.claude/` snippets reflect your choices |
 
 ### Cloud, CI, and containers
 

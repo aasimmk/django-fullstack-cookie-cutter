@@ -11,6 +11,7 @@ celery_broker = "{{ cookiecutter.celery_broker }}"
 documentation_provider = "{{ cookiecutter.documentation_provider }}"
 license_choice = "{{ cookiecutter.license }}"
 use_tox = "{{ cookiecutter.use_tox }}"
+use_celery = "{{ cookiecutter.use_celery }}"
 api_project = "{{ cookiecutter.api_project }}"
 openapi_schema = "{{ cookiecutter.openapi_schema }}"
 use_i18n = "{{ cookiecutter.use_i18n }}"
@@ -69,7 +70,9 @@ COMPATIBILITY: dict[tuple[int, int], tuple[tuple[int, int], tuple[int, int] | No
     (4, 2): ((3, 8), (3, 12)),
     (5, 0): ((3, 10), (3, 12)),
     (5, 1): ((3, 10), (3, 13)),
-    (5, 2): ((3, 10), (3, 13)),
+    (5, 2): ((3, 10), (3, 14)),
+    (6, 0): ((3, 12), (3, 14)),
+    (6, 1): ((3, 12), (3, 14)),
 }
 
 
@@ -87,6 +90,23 @@ def validate_django_python(dj_ver: str, py_ver: str) -> None:
     if high is not None and py > high:
         raise ValueError(
             f"Django {dj_ver} supports Python up to {high[0]}.{high[1]}, got {py_ver}"
+        )
+
+
+# Newest Django each optional integration can currently resolve against.
+# django-celery-beat 2.9.0 pins django<6.1; lift this once a release supports 6.1.
+CELERY_MAX_DJANGO: tuple[int, int] = (6, 0)
+
+
+def validate_django_celery(dj_ver: str, celery: str) -> None:
+    if celery != "y":
+        return
+    if _django_major_minor(dj_ver) > CELERY_MAX_DJANGO:
+        major, minor = CELERY_MAX_DJANGO
+        raise ValueError(
+            f"use_celery=y is not yet compatible with Django {dj_ver}: "
+            f"django-celery-beat supports Django up to {major}.{minor}. "
+            f"Pick django_version {major}.{minor} or older, or set use_celery=n."
         )
 
 
@@ -163,6 +183,7 @@ def validate_project_slug(slug: str) -> None:
 def main() -> None:
     validate_project_slug(project_slug)
     validate_django_python(django_version, python_version)
+    validate_django_celery(django_version, use_celery)
     validate_postgres_version(postgres_version)
     validate_celery_broker(celery_broker)
     validate_documentation_provider(documentation_provider)

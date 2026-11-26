@@ -2,7 +2,6 @@
 backend/.env
 .venv/
 backend/.venv/
-.python-version
 __pycache__/
 *.py[cod]
 *.sqlite3

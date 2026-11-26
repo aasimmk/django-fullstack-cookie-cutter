@@ -3,8 +3,8 @@
 **django-fullstack-cookie-cutter** is a [Cookiecutter](https://github.com/cookiecutter/cookiecutter) template that scaffolds a production-minded Django monorepo: a **`backend/`** app (project package under **`src/`**, [uv](https://github.com/astral-sh/uv), **Ruff**, **pytest**), optional **Vue 3** or **React 18/19** (**Vite 5/6**, Tailwind, Vitest, Playwright, **django-vite**), optional **Nuxt 3/4** or **Next.js 14/15** (standalone on port 3000 with Vitest + Playwright), optional **HTMX** (CDN major 1 or 2), and optional **PostgreSQL**, **Redis** caching, and **Celery** (Redis or RabbitMQ broker) with matching **Docker Compose** services (**`docker/backend/`** + optional **`docker/frontend/`** images) and **GitHub Actions** CI.
 
 [![Cookiecutter](https://img.shields.io/badge/cookiecutter-template-D4AA00?logo=cookiecutter&logoColor=white&style=flat)](https://github.com/cookiecutter/cookiecutter)
-[![Django](https://img.shields.io/static/v1?label=Django&message=4.2%20%7C%205.0%20%7C%205.1%20%7C%205.2&color=092E20&logo=django&logoColor=white&style=flat)](https://www.djangoproject.com/)
-[![Python](https://img.shields.io/static/v1?label=Python&message=3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13&color=3776AB&logo=python&logoColor=white&style=flat)](https://www.python.org/)
+[![Django](https://img.shields.io/static/v1?label=Django&message=4.2%20%7C%205.0%20%7C%205.1%20%7C%205.2%20%7C%206.0%20%7C%206.1&color=092E20&logo=django&logoColor=white&style=flat)](https://www.djangoproject.com/)
+[![Python](https://img.shields.io/static/v1?label=Python&message=3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14&color=3776AB&logo=python&logoColor=white&style=flat)](https://www.python.org/)
 [![uv](https://img.shields.io/static/v1?label=uv&message=backend%20deps%20%26%20CI&color=DE5FE9&style=flat)](https://github.com/astral-sh/uv)
 [![PostgreSQL](https://img.shields.io/static/v1?label=PostgreSQL&message=15%20%7C%2016%20%7C%2017%20%7C%2018&color=4169E1&logo=postgresql&logoColor=white&style=flat)](https://www.postgresql.org/)
 [![Redis](https://img.shields.io/static/v1?label=Redis%20%28Compose%29&message=7&color=DC382D&logo=redis&logoColor=white&style=flat)](https://redis.io/)
@@ -141,7 +141,7 @@ Use the tables as a map from **what you pick at the prompt** to **what lands in 
 
 | What you get | Tuned by | Notes |
 | --- | --- | --- |
-| Django + Python pairing | `django_version`, `python_version` | 4.2–5.2 and 3.10–3.13; compatibility checked in `hooks/pre_gen_project.py` |
+| Django + Python pairing | `django_version`, `python_version` | 4.2–6.1 and 3.10–3.14 (Django 6.x needs Python 3.12+); compatibility checked in `hooks/pre_gen_project.py` |
 | Project package under `backend/src/` | **Always** | Settings modules `local`, `development`, `staging`, `production`, plus `test` for pytest |
 | Env loading + typed helpers | **Always** | `src/settings/_env.py`, `python-dotenv`, `backend/.env` via `backend/.env.example` |
 | `DATABASES` (Postgres vs SQLite) | `use_postgresql` | `y`: **psycopg** + **`DATABASE_URL`** parsed with **django-environ** in `base.py`. `n`: SQLite file under `backend/` |
@@ -241,8 +241,8 @@ Cookiecutter asks variables **in the order they appear in `cookiecutter.json`**:
 | `license`                | `MIT`, `Apache-2.0`, `BSD-3-Clause`, `GPL-3.0-or-later`, `AGPL-3.0-or-later`, or `Proprietary` — root `LICENSE` and `backend/pyproject.toml`                                     |
 | `use_i18n`               | `y` / `n` — gettext / `LocaleMiddleware` / `backend/locale/` / `/i18n/`; **`n`** removes `backend/locale/` in `post_gen`                                                         |
 | **Django / backend** | |
-| `django_version`         | 5.2, 5.1, 5.0, or 4.2                                                                                                                                                           |
-| `python_version`         | 3.13, 3.12, 3.11, or 3.10 (must match Django support; `pre_gen` checks)                                                                                                         |
+| `django_version`         | 5.2 (default, LTS), 6.1, 6.0, 5.1, 5.0, or 4.2 — 6.x requires Python 3.12+                                                                                                      |
+| `python_version`         | 3.13 (default), 3.14, 3.12, 3.11, or 3.10 (must match Django support; `pre_gen` checks; 3.14 needs Django 5.2+)                                                                 |
 | `api_project`            | `y` / `n` — **DRF**, **django-cors-headers**, `src/apps.api`, `/api/v1/…`                                                                                                                                        |
 | `openapi_schema`         | `none`, **drf-spectacular** (OpenAPI 3), or **drf-yasg** (OpenAPI 2) — only with `api_project=y` (`pre_gen` enforces)                                                          |
 | `use_tox`                | `y` / `n` — **`backend/tox.ini`** (tox-uv), dev deps, optional CI Tox job                                                                                                                                        |

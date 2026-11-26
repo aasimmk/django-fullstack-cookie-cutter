@@ -24,7 +24,11 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.49.1",
+{% if cookiecutter['__vite_major_version'] in ["7", "8"] %}
+    "@vitejs/plugin-vue": "^6",
+{% else %}
     "@vitejs/plugin-vue": "^5",
+{% endif %}
     "prettier": "^3.4.2",
     "@vue/test-utils": "^2.4.6",
     "autoprefixer": "^10.4.20",
@@ -32,7 +36,10 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.16",
     "typescript": "~5.6.3",
-{% if cookiecutter['__vite_major_version'] == "6" %}
+{% if cookiecutter['__vite_major_version'] in ["7", "8"] %}
+    "vite": "^{{ cookiecutter['__vite_major_version'] }}",
+    "vitest": "^4",
+{% elif cookiecutter['__vite_major_version'] == "6" %}
     "vite": "^6",
     "vitest": "^3",
 {% else %}

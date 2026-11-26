@@ -1,22 +1,20 @@
 """Versioned HTTP API routes."""
 
-{% if cookiecutter.openapi_schema == "drf-yasg" %}
+{% if cookiecutter.openapi_schema == "drf-yasg" -%}
 from django.urls import path, re_path
-{% else %}
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
+{% elif cookiecutter.openapi_schema == "drf-spectacular" -%}
 from django.urls import path
-{% endif %}
-{% if cookiecutter.openapi_schema == "drf-spectacular" %}
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
-{% elif cookiecutter.openapi_schema == "drf-yasg" %}
-from drf_yasg import openapi
-from drf_yasg.views import get_schema_view
-from rest_framework import permissions
+{% else -%}
+from django.urls import path
 {% endif %}
-
 from .views import HealthAPIView
 
 urlpatterns = [

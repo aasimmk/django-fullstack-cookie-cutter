@@ -5,7 +5,12 @@ version: 2
 build:
   os: ubuntu-22.04
   tools:
+{% if cookiecutter.python_version in ["3.15"] %}
+    # Read the Docs does not offer Python {{ cookiecutter.python_version }} yet; the docs build only needs MkDocs.
+    python: "3.14"
+{% else %}
     python: "{{ cookiecutter.python_version }}"
+{% endif %}
 
 mkdocs:
   configuration: mkdocs.yml

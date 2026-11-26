@@ -1,14 +1,14 @@
 # django-fullstack-cookie-cutter
 
-**django-fullstack-cookie-cutter** is a [Cookiecutter](https://github.com/cookiecutter/cookiecutter) template that scaffolds a production-minded Django monorepo: a **`backend/`** app (project package under **`src/`**, [uv](https://github.com/astral-sh/uv), **Ruff**, **pytest**), optional **Vue 3** or **React 18/19** (**Vite 5/6**, Tailwind, Vitest, Playwright, **django-vite**), optional **Nuxt 3/4** or **Next.js 14/15** (standalone on port 3000 with Vitest + Playwright), optional **HTMX** (CDN major 1 or 2), and optional **PostgreSQL**, **Redis** caching, and **Celery** (Redis or RabbitMQ broker) with matching **Docker Compose** services (**`docker/backend/`** + optional **`docker/frontend/`** images) and **GitHub Actions** CI.
+**django-fullstack-cookie-cutter** is a [Cookiecutter](https://github.com/cookiecutter/cookiecutter) template that scaffolds a production-minded Django monorepo: a **`backend/`** app (project package under **`src/`**, [uv](https://github.com/astral-sh/uv), **Ruff**, **pytest**), optional **Vue 3** or **React 18/19** (**Vite 5–8**, Tailwind, Vitest, Playwright, **django-vite**), optional **Nuxt 3/4** or **Next.js 14–16** (standalone on port 3000 with Vitest + Playwright), optional **HTMX** (CDN major 1 or 2), and optional **PostgreSQL**, **Redis** caching, and **Celery** (Redis or RabbitMQ broker) with matching **Docker Compose** services (**`docker/backend/`** + optional **`docker/frontend/`** images) and **GitHub Actions** CI.
 
 [![Cookiecutter](https://img.shields.io/badge/cookiecutter-template-D4AA00?logo=cookiecutter&logoColor=white&style=flat)](https://github.com/cookiecutter/cookiecutter)
-[![Django](https://img.shields.io/static/v1?label=Django&message=4.2%20%7C%205.0%20%7C%205.1%20%7C%205.2&color=092E20&logo=django&logoColor=white&style=flat)](https://www.djangoproject.com/)
-[![Python](https://img.shields.io/static/v1?label=Python&message=3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13&color=3776AB&logo=python&logoColor=white&style=flat)](https://www.python.org/)
+[![Django](https://img.shields.io/static/v1?label=Django&message=4.2%20%7C%205.0%20%7C%205.1%20%7C%205.2%20%7C%206.0%20%7C%206.1&color=092E20&logo=django&logoColor=white&style=flat)](https://www.djangoproject.com/)
+[![Python](https://img.shields.io/static/v1?label=Python&message=3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14%20%7C%203.15&color=3776AB&logo=python&logoColor=white&style=flat)](https://www.python.org/)
 [![uv](https://img.shields.io/static/v1?label=uv&message=backend%20deps%20%26%20CI&color=DE5FE9&style=flat)](https://github.com/astral-sh/uv)
-[![PostgreSQL](https://img.shields.io/static/v1?label=PostgreSQL&message=15%20%7C%2016%20%7C%2017%20%7C%2018&color=4169E1&logo=postgresql&logoColor=white&style=flat)](https://www.postgresql.org/)
-[![Redis](https://img.shields.io/static/v1?label=Redis%20%28Compose%29&message=7&color=DC382D&logo=redis&logoColor=white&style=flat)](https://redis.io/)
-[![RabbitMQ](https://img.shields.io/static/v1?label=RabbitMQ%20%28Compose%29&message=3.x&color=FF6600&logo=rabbitmq&logoColor=white&style=flat)](https://www.rabbitmq.com/)
+[![PostgreSQL](https://img.shields.io/static/v1?label=PostgreSQL&message=15%20%7C%2016%20%7C%2017%20%7C%2018%20%7C%2019&color=4169E1&logo=postgresql&logoColor=white&style=flat)](https://www.postgresql.org/)
+[![Redis](https://img.shields.io/static/v1?label=Redis%20%28Compose%29&message=7%20%7C%208&color=DC382D&logo=redis&logoColor=white&style=flat)](https://redis.io/)
+[![RabbitMQ](https://img.shields.io/static/v1?label=RabbitMQ%20%28Compose%29&message=3%20%7C%204&color=FF6600&logo=rabbitmq&logoColor=white&style=flat)](https://www.rabbitmq.com/)
 [![Docker](https://img.shields.io/static/v1?label=Docker&message=Compose%20%2B%20backend%2Ffrontend%20images&color=2496ED&logo=docker&logoColor=white&style=flat)](https://docs.docker.com/compose/)
 [![Node.js](https://img.shields.io/static/v1?label=Node.js&message=20%20%7C%2022%20%7C%2024%20%7C%2025%20%7C%2026&color=339933&logo=nodedotjs&logoColor=white&style=flat)](https://nodejs.org/)
 [![npm](https://img.shields.io/static/v1?label=npm%20%7C%20pnpm%20%7C%20yarn&message=SPA%20install&color=CB3837&logo=npm&logoColor=white&style=flat)](https://www.npmjs.com/)
@@ -122,7 +122,7 @@ Use this as a shortcut before you read the full feature tables.
 | --- | --- |
 | JSON API only, no SPA | `frontend_stack` = `none`, `api_project` = `y`; optional `openapi_schema` = `drf-spectacular` (OpenAPI 3) or `drf-yasg` (OpenAPI 2) |
 | Server-rendered HTML with progressive enhancement | `frontend_stack` = `htmx_2` or `htmx_1` (django-htmx + CDN major) |
-| Separate SPA with Django as API or hybrid | Pick one **`frontend_stack`** value (e.g. `vue_3_vite_6`, `react_19_vite_5`, `nuxt_4`, `next_14` — see prompts table); set `node_version` + `node_package_manager` (`vue`/`react` use **django-vite** + :5173; `nuxt`/`next` on **:3000** when **`api_project`** is `y`) |
+| Separate SPA with Django as API or hybrid | Pick one **`frontend_stack`** value (e.g. `vue_3_vite_8`, `react_19_vite_7`, `nuxt_4`, `next_16` — see prompts table); set `node_version` + `node_package_manager` (`vue`/`react` use **django-vite** + :5173; `nuxt`/`next` on **:3000** when **`api_project`** is `y`) |
 | Local DB without Docker Postgres | `use_postgresql` = `n` (SQLite for dev; pytest still uses `src.settings.test`) |
 | Production-like local stack | `use_postgresql` = `y`, tune `postgres_version`; add Redis / Celery if you need them in dev |
 | Background jobs | `use_celery` = `y`, then `celery_broker` = `redis` or `rabbitmq` to match ops |
@@ -141,7 +141,7 @@ Use the tables as a map from **what you pick at the prompt** to **what lands in 
 
 | What you get | Tuned by | Notes |
 | --- | --- | --- |
-| Django + Python pairing | `django_version`, `python_version` | 4.2–5.2 and 3.10–3.13; compatibility checked in `hooks/pre_gen_project.py` |
+| Django + Python pairing | `django_version`, `python_version` | 4.2–6.1 and 3.10–3.15 (Django 6.x needs Python 3.12+; 3.15 needs Django 6.1); compatibility checked in `hooks/pre_gen_project.py` |
 | Project package under `backend/src/` | **Always** | Settings modules `local`, `development`, `staging`, `production`, plus `test` for pytest |
 | Env loading + typed helpers | **Always** | `src/settings/_env.py`, `python-dotenv`, `backend/.env` via `backend/.env.example` |
 | `DATABASES` (Postgres vs SQLite) | `use_postgresql` | `y`: **psycopg** + **`DATABASE_URL`** parsed with **django-environ** in `base.py`. `n`: SQLite file under `backend/` |
@@ -158,8 +158,8 @@ Use the tables as a map from **what you pick at the prompt** to **what lands in 
 | --- | --- | --- |
 | Server templates + Tailwind CDN | `frontend_stack` = `none` | Default Django templates |
 | HTMX | `frontend_stack` = `htmx_2` or `htmx_1` | **django-htmx** + CDN (SRI) for HTMX major **2** or **1** |
-| Vue or React SPA | `frontend_stack` = `vue_3_vite_6`, `vue_3_vite_5`, `react_18_vite_6`, … | One choice encodes framework + majors; Tailwind, **django-vite**, build to `backend/static/dist` |
-| Nuxt or Next SPA | `frontend_stack` = `nuxt_3`, `nuxt_4`, `next_15`, `next_14` | SPA mode / App Router; dev server on **:3000**; use **`api_project`** = `y` for browser CORS to Django |
+| Vue or React SPA | `frontend_stack` = `vue_3_vite_8` … `vue_3_vite_5`, `react_19_vite_8`, … (Vite 5–8) | One choice encodes framework + majors; Tailwind, **django-vite**, build to `backend/static/dist` |
+| Nuxt or Next SPA | `frontend_stack` = `nuxt_3`, `nuxt_4`, `next_16`, `next_15`, `next_14` | SPA mode / App Router; dev server on **:3000**; use **`api_project`** = `y` for browser CORS to Django |
 | Node version + lockfile tool | `node_version`, `node_package_manager` | Used for Vue/React/Nuxt/Next and CI; `frontend/.nvmrc`; post_gen aligns lockfile when possible |
 | SPA unit + e2e tests | `frontend_stack` selects a Node SPA | Vitest + Playwright |
 | Safe copy for `{{ … }}` in SPA files | **Always** (template) | `cookiecutter.json` `_copy_without_render` for Vue `.vue` and React `.tsx`/`.css` that contain framework mustaches; extend globs if you add files with literal `{{` that must not pass through Jinja |
@@ -168,9 +168,9 @@ Use the tables as a map from **what you pick at the prompt** to **what lands in 
 
 | What you get | Tuned by | Notes |
 | --- | --- | --- |
-| PostgreSQL in Compose | `use_postgresql`, `postgres_version` | `db` service from `docker/postgres/Dockerfile` (15–18), `docker-entrypoint-initdb.d/` for extensions |
-| Redis as Django cache | `use_redis_cache` | `django.core.cache.backends.redis.RedisCache`, `REDIS_CACHE_URL`, `redis` package |
-| Celery worker + beat | `use_celery`, `celery_broker` | **django-celery-beat**; broker Redis or RabbitMQ; Compose services; production runbooks live in the generated **README** → *Celery and cache* when Redis or Celery is on |
+| PostgreSQL in Compose | `use_postgresql`, `postgres_version` | `db` service from `docker/postgres/Dockerfile` (15–19), `docker-entrypoint-initdb.d/` for extensions |
+| Redis as Django cache | `use_redis_cache`, `redis_version` | `django.core.cache.backends.redis.RedisCache`, `REDIS_CACHE_URL`, `redis` package |
+| Celery worker + beat | `use_celery`, `celery_broker`, `rabbitmq_version` | **django-celery-beat**; broker Redis or RabbitMQ (not yet with Django 6.1 — django-celery-beat caps Django < 6.1); Compose services; production runbooks live in the generated **README** → *Celery and cache* when Redis or Celery is on |
 
 ### Project metadata, docs, license, editor
 
@@ -194,7 +194,7 @@ Use the tables as a map from **what you pick at the prompt** to **what lands in 
 
 | Script | Role |
 | --- | --- |
-| `hooks/pre_gen_project.py` | Validates slug, Django/Python matrix, Postgres major, Celery broker, documentation provider, license, `use_tox`, `use_i18n`, `openapi_schema` vs `api_project`, and **`frontend_stack`** |
+| `hooks/pre_gen_project.py` | Validates slug, Django/Python matrix, Django vs Celery, Postgres / Redis / RabbitMQ majors, Node vs `nuxt_4`, Celery broker, documentation provider, license, `use_tox`, `use_i18n`, `openapi_schema` vs `api_project`, and **`frontend_stack`** |
 | `hooks/post_gen_project.py` | Prunes unused `frontend/` and `deploy/` trees, `docker/frontend/` when no SPA, `docker/postgres/` when Postgres off, docs scaffolds, `backend/tox.ini` when Tox off; SPA lockfile alignment; `LICENSE` year; `uv sync` + Ruff format in `backend/` when uv is available |
 
 ## GitHub Actions in generated projects
@@ -241,21 +241,23 @@ Cookiecutter asks variables **in the order they appear in `cookiecutter.json`**:
 | `license`                | `MIT`, `Apache-2.0`, `BSD-3-Clause`, `GPL-3.0-or-later`, `AGPL-3.0-or-later`, or `Proprietary` — root `LICENSE` and `backend/pyproject.toml`                                     |
 | `use_i18n`               | `y` / `n` — gettext / `LocaleMiddleware` / `backend/locale/` / `/i18n/`; **`n`** removes `backend/locale/` in `post_gen`                                                         |
 | **Django / backend** | |
-| `django_version`         | 5.2, 5.1, 5.0, or 4.2                                                                                                                                                           |
-| `python_version`         | 3.13, 3.12, 3.11, or 3.10 (must match Django support; `pre_gen` checks)                                                                                                         |
+| `django_version`         | 5.2 (default, LTS), 6.1, 6.0, 5.1, 5.0, or 4.2 — 6.x requires Python 3.12+                                                                                                      |
+| `python_version`         | 3.13 (default), 3.15, 3.14, 3.12, 3.11, or 3.10 (must match Django support; `pre_gen` checks; 3.14 needs Django 5.2+, 3.15 needs 6.1)                                                                 |
 | `api_project`            | `y` / `n` — **DRF**, **django-cors-headers**, `src/apps.api`, `/api/v1/…`                                                                                                                                        |
 | `openapi_schema`         | `none`, **drf-spectacular** (OpenAPI 3), or **drf-yasg** (OpenAPI 2) — only with `api_project=y` (`pre_gen` enforces)                                                          |
 | `use_tox`                | `y` / `n` — **`backend/tox.ini`** (tox-uv), dev deps, optional CI Tox job                                                                                                                                        |
 | **Database** | |
 | `use_postgresql`         | `y` / `n` — Postgres vs SQLite (pytest still uses SQLite via `src.settings.test`)                                                                                                |
-| `postgres_version`       | `18`, `17`, `16`, or `15` — Compose `db` image; ignored when `use_postgresql` is `n`                                                                                            |
+| `postgres_version`       | `18` (default), `19`, `17`, `16`, or `15` — Compose `db` image; ignored when `use_postgresql` is `n`                                                                                            |
 | **Cache & tasks** | |
 | `use_redis_cache`        | `y` / `n` — Redis as Django cache (`REDIS_CACHE_URL`)                                                                                                                            |
+| `redis_version`          | `7` (default) or `8` — Compose `redis` image; used when the Redis cache or a Redis Celery broker is on                                                                          |
 | `use_celery`             | `y` / `n`                                                                                                                                                                       |
 | `celery_broker`          | `redis` or `rabbitmq` — when `use_celery` is `y`                                                                                                                                 |
+| `rabbitmq_version`       | `3` (default) or `4` — Compose `rabbitmq` image; used when `celery_broker` is `rabbitmq`                                                                                        |
 | **Frontend** | |
-| `frontend_stack`         | **Single prompt:** `none` · `htmx_2` / `htmx_1` · `vue_3_vite_6` / `vue_3_vite_5` · `react_18_vite_6` / `react_18_vite_5` / `react_19_vite_6` / `react_19_vite_5` · `nuxt_3` / `nuxt_4` · `next_15` / `next_14`. Underscore tokens encode framework + majors (e.g. `react_19_vite_5` → React **19**, Vite **5**). Templates use derived **`__frontend_framework`** / **`__*`** keys from `cookiecutter.json` (not prompted). |
-| `node_version`           | `20`, `22`, `24`, `25`, or `26` — when `frontend_stack` is a Node SPA (`vue_*`, `react_*`, `nuxt_*`, `next_*`)                                                                                |
+| `frontend_stack`         | **Single prompt:** `none` · `htmx_2` / `htmx_1` · `vue_3_vite_8` / `vue_3_vite_7` / `vue_3_vite_6` / `vue_3_vite_5` · `react_18_vite_8` … `react_18_vite_5` · `react_19_vite_8` … `react_19_vite_5` · `nuxt_3` / `nuxt_4` · `next_16` / `next_15` / `next_14`. Underscore tokens encode framework + majors (e.g. `react_19_vite_5` → React **19**, Vite **5**). Templates use derived **`__frontend_framework`** / **`__*`** keys from `cookiecutter.json` (not prompted). |
+| `node_version`           | `20`, `22`, `24`, `25`, or `26` — when `frontend_stack` is a Node SPA (`vue_*`, `react_*`, `nuxt_*`, `next_*`); `nuxt_4` needs `22`+                                                                                |
 | `node_package_manager`   | `npm`, `pnpm`, or `yarn` — same scope as `node_version`                                                                                                                          |
 | **Cloud & docs** | |
 | `cloud_provider`         | `none`, `aws`, `gcp`, `azure`, `heroku`, `digitalocean`                                                                                                                         |

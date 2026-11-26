@@ -70,14 +70,14 @@ services:
 
 {% if cookiecutter.use_redis_cache == "y" or (cookiecutter.use_celery == "y" and cookiecutter.celery_broker == "redis") %}
   redis:
-    image: redis:7-alpine
+    image: redis:{{ cookiecutter.redis_version }}-alpine
     ports:
       - "6379:6379"
 {% endif %}
 
 {% if cookiecutter.use_celery == "y" and cookiecutter.celery_broker == "rabbitmq" %}
   rabbitmq:
-    image: rabbitmq:3-management-alpine
+    image: rabbitmq:{{ cookiecutter.rabbitmq_version }}-management-alpine
     ports:
       - "5672:5672"
       - "15672:15672"

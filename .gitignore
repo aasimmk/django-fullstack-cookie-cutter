@@ -208,3 +208,7 @@ _tmp_mig/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Local stack-combination verifier (maintainer tool) and its output
+/scripts/verify_stack.py
+/.verify-stack/

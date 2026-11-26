@@ -1,0 +1,15 @@
+{% if cookiecutter['__next_major_version'] == "14" -%}
+// Next.js 14 cannot load next.config.ts (supported from Next.js 15).
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+};
+{%- else -%}
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
+};
+{%- endif %}
+
+export default nextConfig;

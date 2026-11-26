@@ -2,6 +2,10 @@
 
 from pathlib import Path
 
+{% if cookiecutter.use_postgresql == "y" -%}
+import environ as django_environ
+
+{% endif -%}
 from ._env import env
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -91,8 +95,6 @@ WSGI_APPLICATION = "src.wsgi.application"
 ASGI_APPLICATION = "src.asgi.application"
 
 {% if cookiecutter.use_postgresql == "y" %}
-import environ as django_environ
-
 DATABASES = {
     "default": django_environ.Env().db(
         "DATABASE_URL",

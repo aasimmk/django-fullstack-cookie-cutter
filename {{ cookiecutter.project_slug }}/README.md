@@ -357,7 +357,7 @@ Celery is disabled for this project.
 | Celery                                     | {% if cookiecutter.use_celery == "y" %}yes{% else %}no{% endif %}                               |
 | Celery broker                              | {% if cookiecutter.use_celery == "y" %}{{ cookiecutter.celery_broker }}{% else %}n/a{% endif %} |
 
-**Local Docker:** see root `docker-compose.yml` — `redis` appears when cache or a Redis Celery broker is enabled; `rabbitmq` appears when Celery uses RabbitMQ. Celery runs as **`celery-worker`** and **`celery-beat`** services.
+**Local Docker:** see root `docker-compose.yml` — `redis` (Redis {{ cookiecutter.redis_version }}) appears when cache or a Redis Celery broker is enabled; `rabbitmq` (RabbitMQ {{ cookiecutter.rabbitmq_version }}) appears when Celery uses RabbitMQ. Celery runs as **`celery-worker`** and **`celery-beat`** services.
 
 ### Environment variables
 

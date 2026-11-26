@@ -8,6 +8,8 @@ python_version = "{{ cookiecutter.python_version }}"
 project_slug = "{{ cookiecutter.project_slug }}"
 postgres_version = "{{ cookiecutter.postgres_version }}"
 celery_broker = "{{ cookiecutter.celery_broker }}"
+redis_version = "{{ cookiecutter.redis_version }}"
+rabbitmq_version = "{{ cookiecutter.rabbitmq_version }}"
 documentation_provider = "{{ cookiecutter.documentation_provider }}"
 license_choice = "{{ cookiecutter.license }}"
 use_tox = "{{ cookiecutter.use_tox }}"
@@ -16,8 +18,11 @@ api_project = "{{ cookiecutter.api_project }}"
 openapi_schema = "{{ cookiecutter.openapi_schema }}"
 use_i18n = "{{ cookiecutter.use_i18n }}"
 frontend_stack = "{{ cookiecutter.frontend_stack }}"
+node_version = "{{ cookiecutter.node_version }}"
 
-ALLOWED_POSTGRES_VERSIONS = frozenset({"15", "16", "17", "18"})
+ALLOWED_POSTGRES_VERSIONS = frozenset({"15", "16", "17", "18", "19"})
+ALLOWED_REDIS_VERSIONS = frozenset({"7", "8"})
+ALLOWED_RABBITMQ_VERSIONS = frozenset({"3", "4"})
 ALLOWED_CELERY_BROKERS = frozenset({"redis", "rabbitmq"})
 ALLOWED_DOCS_PROVIDERS = frozenset(
     {"none", "gitbook", "readthedocs", "mkdocs", "notion"},
@@ -31,14 +36,21 @@ ALLOWED_FRONTEND_STACK = frozenset(
         "none",
         "htmx_2",
         "htmx_1",
+        "vue_3_vite_8",
+        "vue_3_vite_7",
         "vue_3_vite_6",
         "vue_3_vite_5",
+        "react_18_vite_8",
+        "react_18_vite_7",
         "react_18_vite_6",
         "react_18_vite_5",
+        "react_19_vite_8",
+        "react_19_vite_7",
         "react_19_vite_6",
         "react_19_vite_5",
         "nuxt_3",
         "nuxt_4",
+        "next_16",
         "next_15",
         "next_14",
     },
@@ -72,7 +84,7 @@ COMPATIBILITY: dict[tuple[int, int], tuple[tuple[int, int], tuple[int, int] | No
     (5, 1): ((3, 10), (3, 13)),
     (5, 2): ((3, 10), (3, 14)),
     (6, 0): ((3, 12), (3, 14)),
-    (6, 1): ((3, 12), (3, 14)),
+    (6, 1): ((3, 12), (3, 15)),
 }
 
 
@@ -164,6 +176,30 @@ def validate_postgres_version(version: str) -> None:
         )
 
 
+# Oldest Node major each frontend stack installs on (from current upstream `engines`).
+# Nuxt 4's CLI / Nitro server need Node ^22.22 || ^24.15 || >=26.
+FRONTEND_MIN_NODE: dict[str, int] = {"nuxt_4": 22}
+
+
+def validate_frontend_node(stack: str, node: str) -> None:
+    minimum = FRONTEND_MIN_NODE.get(stack)
+    if minimum is not None and int(node) < minimum:
+        raise ValueError(
+            f"frontend_stack {stack} needs node_version {minimum} or newer, got {node}"
+        )
+
+
+def validate_service_versions(redis: str, rabbitmq: str) -> None:
+    if redis not in ALLOWED_REDIS_VERSIONS:
+        raise ValueError(
+            f"redis_version must be one of {sorted(ALLOWED_REDIS_VERSIONS)}, got {redis!r}"
+        )
+    if rabbitmq not in ALLOWED_RABBITMQ_VERSIONS:
+        raise ValueError(
+            f"rabbitmq_version must be one of {sorted(ALLOWED_RABBITMQ_VERSIONS)}, got {rabbitmq!r}"
+        )
+
+
 def validate_frontend_stack() -> None:
     """Ensure frontend_stack is a supported framework + version combination."""
     if frontend_stack not in ALLOWED_FRONTEND_STACK:
@@ -186,6 +222,7 @@ def main() -> None:
     validate_django_celery(django_version, use_celery)
     validate_postgres_version(postgres_version)
     validate_celery_broker(celery_broker)
+    validate_service_versions(redis_version, rabbitmq_version)
     validate_documentation_provider(documentation_provider)
     validate_license(license_choice)
     validate_use_tox(use_tox)
@@ -193,6 +230,7 @@ def main() -> None:
     validate_openapi_schema(openapi_schema)
     validate_api_openapi(api_project, openapi_schema)
     validate_frontend_stack()
+    validate_frontend_node(frontend_stack, node_version)
 
 
 if __name__ == "__main__":
